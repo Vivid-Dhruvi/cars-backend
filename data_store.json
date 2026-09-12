@@ -1,0 +1,769 @@
+{
+  "INS-1789210751560": {
+    "inspection_id": "INS-1789210751560",
+    "vehicle_info": {
+      "company": "",
+      "makeModel": "",
+      "plateNumber": "",
+      "inspectionType": "pickup"
+    },
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "overall_confidence": "0.98"
+    },
+    "findings": [],
+    "undamaged_visible_parts": [
+      "front_bumper",
+      "windshield",
+      "hood",
+      "doors",
+      "wheels"
+    ],
+    "overall_assessment": "Vehicle inspected: No visual damage detected across uploaded photos.",
+    "is_paid": false
+  },
+  "INS-1789211166812": {
+    "inspection_id": "INS-1789211166812",
+    "vehicle_info": {
+      "company": "",
+      "makeModel": "",
+      "plateNumber": "",
+      "inspectionType": "pickup"
+    },
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "overall_confidence": "0.98"
+    },
+    "findings": [],
+    "undamaged_visible_parts": [
+      "front_bumper",
+      "windshield",
+      "hood",
+      "doors",
+      "wheels"
+    ],
+    "overall_assessment": "Vehicle inspected: No visual damage detected across uploaded photos.",
+    "is_paid": false
+  },
+  "INS-1789212143830": {
+    "inspection_id": "INS-1789212143830",
+    "vehicle_info": {
+      "company": "",
+      "makeModel": "",
+      "plateNumber": "",
+      "inspectionType": "pickup"
+    },
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "overall_confidence": "0.98"
+    },
+    "findings": [],
+    "undamaged_visible_parts": [
+      "front_bumper",
+      "windshield",
+      "hood",
+      "doors",
+      "wheels"
+    ],
+    "overall_assessment": "Vehicle inspected: No visual damage detected across uploaded photos.",
+    "is_paid": false
+  },
+  "INS-1789213325851": {
+    "inspection_id": "INS-1789213325851",
+    "vehicle_info": {
+      "company": "",
+      "makeModel": "",
+      "plateNumber": "",
+      "inspectionType": "pickup"
+    },
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "overall_confidence": "0.98"
+    },
+    "findings": [],
+    "undamaged_visible_parts": [
+      "front_bumper",
+      "windshield",
+      "hood",
+      "doors",
+      "wheels"
+    ],
+    "overall_assessment": "Vehicle inspected: No visual damage detected across uploaded photos.",
+    "is_paid": false
+  },
+  "INS-1789213904602": {
+    "inspection_id": "INS-1789213904602",
+    "vehicle_info": {
+      "company": "",
+      "makeModel": "",
+      "plateNumber": "",
+      "inspectionType": "pickup"
+    },
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "overall_confidence": "0.98"
+    },
+    "findings": [],
+    "undamaged_visible_parts": [
+      "front_bumper",
+      "windshield",
+      "hood",
+      "doors",
+      "wheels"
+    ],
+    "overall_assessment": "Vehicle inspected: No visual damage detected across uploaded photos.",
+    "is_paid": false
+  },
+  "INS-1789214666112": {
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "images_received": 14,
+      "images_usable": 14,
+      "overall_confidence": 0.95
+    },
+    "image_quality": [
+      {
+        "image_id": "IMAGE_01",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_02",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_03",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_04",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_05",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_06",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_07",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_08",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_09",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_10",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_11",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_12",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_13",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_14",
+        "quality": "good",
+        "issues": []
+      }
+    ],
+    "findings": [
+      {
+        "finding_id": "D001",
+        "vehicle_part": "front_bumper",
+        "damage_type": "scuff_or_gouge",
+        "severity": "Moderate",
+        "confidence": 0.96,
+        "supporting_images": [
+          "IMAGE_01",
+          "IMAGE_03"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_01",
+            "box": [
+              700,
+              105,
+              840,
+              220
+            ]
+          },
+          {
+            "image_id": "IMAGE_03",
+            "box": [
+              690,
+              350,
+              800,
+              480
+            ]
+          }
+        ],
+        "description": "Scuff marks and scraped paint on the front-left lower bumper section.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D002",
+        "vehicle_part": "windshield",
+        "damage_type": "glass_damage",
+        "severity": "Minor",
+        "confidence": 0.93,
+        "supporting_images": [
+          "IMAGE_02",
+          "IMAGE_03"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_02",
+            "box": [
+              320,
+              370,
+              345,
+              395
+            ]
+          },
+          {
+            "image_id": "IMAGE_03",
+            "box": [
+              235,
+              435,
+              250,
+              450
+            ]
+          }
+        ],
+        "description": "Star chip on the front windshield glass.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D003",
+        "vehicle_part": "driver_door",
+        "damage_type": "scratch",
+        "severity": "Minor",
+        "confidence": 0.94,
+        "supporting_images": [
+          "IMAGE_04"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_04",
+            "box": [
+              505,
+              570,
+              525,
+              685
+            ]
+          }
+        ],
+        "description": "Horizontal scratch across the rear driver-side door panel.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D004",
+        "vehicle_part": "rear_left_quarter_panel",
+        "damage_type": "dent",
+        "severity": "Moderate",
+        "confidence": 0.95,
+        "supporting_images": [
+          "IMAGE_05"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_05",
+            "box": [
+              500,
+              360,
+              570,
+              415
+            ]
+          }
+        ],
+        "description": "Visible dent on the driver-side rear quarter panel above the wheel arch.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D005",
+        "vehicle_part": "rear_left_corner",
+        "damage_type": "scuff_or_gouge",
+        "severity": "Minor",
+        "confidence": 0.92,
+        "supporting_images": [
+          "IMAGE_05",
+          "IMAGE_06"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_05",
+            "box": [
+              600,
+              410,
+              710,
+              460
+            ]
+          },
+          {
+            "image_id": "IMAGE_06",
+            "box": [
+              640,
+              110,
+              780,
+              145
+            ]
+          }
+        ],
+        "description": "Scrapes and surface scuffing on the rear-left corner of the rear bumper.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D006",
+        "vehicle_part": "tailgate",
+        "damage_type": "dent",
+        "severity": "Minor",
+        "confidence": 0.91,
+        "supporting_images": [
+          "IMAGE_06"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_06",
+            "box": [
+              510,
+              475,
+              550,
+              520
+            ]
+          }
+        ],
+        "description": "Small dent located centrally below the emblem on the tailgate.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D007",
+        "vehicle_part": "passenger_door",
+        "damage_type": "scratch",
+        "severity": "Minor",
+        "confidence": 0.9,
+        "supporting_images": [
+          "IMAGE_09"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_09",
+            "box": [
+              450,
+              490,
+              480,
+              600
+            ]
+          }
+        ],
+        "description": "Linear surface scratch on the front passenger door panel.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D008",
+        "vehicle_part": "front_left_wheel",
+        "damage_type": "wheel_or_rim_damage",
+        "severity": "Moderate",
+        "confidence": 0.95,
+        "supporting_images": [
+          "IMAGE_11"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_11",
+            "box": [
+              470,
+              280,
+              750,
+              375
+            ]
+          }
+        ],
+        "description": "Curb rash abrasion along the outer lip of the front-left alloy rim.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D009",
+        "vehicle_part": "rear_right_wheel",
+        "damage_type": "wheel_or_rim_damage",
+        "severity": "Minor",
+        "confidence": 0.88,
+        "supporting_images": [
+          "IMAGE_13"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_13",
+            "box": [
+              305,
+              630,
+              355,
+              670
+            ]
+          }
+        ],
+        "description": "Minor curb scrape along the edge of the rear-right alloy rim.",
+        "is_duplicate": false
+      }
+    ],
+    "undamaged_visible_parts": [
+      "hood",
+      "roof",
+      "rear_windshield",
+      "front_right_fender",
+      "rear_left_wheel",
+      "front_right_wheel"
+    ],
+    "uncertain_findings": [],
+    "overall_assessment": "The vehicle exhibits multiple area damages including bumper scuffs, panel scratches, dents on the rear-left quarter panel and tailgate, a glass chip on the front windshield, and curb rash on two alloy rims.",
+    "inspection_id": "INS-1789214666112",
+    "is_paid": true,
+    "user_info": {
+      "name": "789",
+      "email": "vivid.dhruvipatel@gmail.com",
+      "paid_at": "2026-09-12T12:05:37.770Z",
+      "amount": 3
+    },
+    "sha256_hash": "sha256-l6motmfbrfqmtyc9bai"
+  },
+  "INS-1789215085653": {
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "images_received": 14,
+      "images_usable": 14,
+      "overall_confidence": 0.95
+    },
+    "image_quality": [
+      {
+        "image_id": "IMAGE_01",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_02",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_03",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_04",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_05",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_06",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_07",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_08",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_09",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_10",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_11",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_12",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_13",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_14",
+        "quality": "good",
+        "issues": []
+      }
+    ],
+    "findings": [
+      {
+        "finding_id": "D001",
+        "vehicle_part": "front_bumper",
+        "damage_type": "Scuff_or_gouge",
+        "severity": "Moderate",
+        "confidence": 0.95,
+        "supporting_images": [
+          "IMAGE_01",
+          "IMAGE_03"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_01",
+            "box": [
+              600,
+              300,
+              920,
+              700
+            ]
+          },
+          {
+            "image_id": "IMAGE_03",
+            "box": [
+              600,
+              300,
+              920,
+              700
+            ]
+          }
+        ],
+        "description": "Deep scuffs, friction gouges, and paint abrasion along the corner of the front bumper cover.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D002",
+        "vehicle_part": "headlight",
+        "damage_type": "Crack",
+        "severity": "Moderate",
+        "confidence": 0.95,
+        "supporting_images": [
+          "IMAGE_01",
+          "IMAGE_03"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_01",
+            "box": [
+              200,
+              370,
+              580,
+              600
+            ]
+          },
+          {
+            "image_id": "IMAGE_03",
+            "box": [
+              200,
+              370,
+              580,
+              600
+            ]
+          }
+        ],
+        "description": "Fractured and cracked lens plastic on the corner light/indicator lamp assembly.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D003",
+        "vehicle_part": "front_left_fender",
+        "damage_type": "Dent",
+        "severity": "Minor",
+        "confidence": 0.88,
+        "supporting_images": [
+          "IMAGE_03"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_03",
+            "box": [
+              110,
+              580,
+              260,
+              670
+            ]
+          }
+        ],
+        "description": "Minor dent crease and clear coat scratches on the front fender above the corner lamp.",
+        "is_duplicate": false
+      }
+    ],
+    "undamaged_visible_parts": [
+      "hood",
+      "front_left_wheel"
+    ],
+    "uncertain_findings": [],
+    "overall_assessment": "The vehicle shows distinct physical impact damage focused on the front corner, including heavy scuffing/gouging to the front bumper cover, a cracked corner light lens, and minor denting on the front fender panel.",
+    "inspection_id": "INS-1789215085653",
+    "is_paid": true,
+    "user_info": {
+      "name": "789",
+      "email": "vivid.dhruvipatel@gmail.com",
+      "paid_at": "2026-09-12T12:12:35.363Z",
+      "amount": 3
+    },
+    "sha256_hash": "sha256-fj0mxaps1cwmtyci9ib"
+  },
+  "INS-1789216621384": {
+    "inspection_summary": {
+      "vehicle_visible": true,
+      "images_received": 4,
+      "images_usable": 4,
+      "overall_confidence": 0.95
+    },
+    "image_quality": [
+      {
+        "image_id": "IMAGE_01",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_02",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_03",
+        "quality": "good",
+        "issues": []
+      },
+      {
+        "image_id": "IMAGE_04",
+        "quality": "good",
+        "issues": []
+      }
+    ],
+    "findings": [
+      {
+        "finding_id": "D001",
+        "vehicle_part": "front_bumper",
+        "damage_type": "Scuff_or_gouge",
+        "severity": "Moderate",
+        "confidence": 0.96,
+        "supporting_images": [
+          "IMAGE_01",
+          "IMAGE_03"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_01",
+            "box": [
+              695,
+              105,
+              840,
+              220
+            ]
+          },
+          {
+            "image_id": "IMAGE_03",
+            "box": [
+              690,
+              360,
+              800,
+              480
+            ]
+          }
+        ],
+        "description": "Visible scuff marks and deep abrasions on the lower front bumper paint and plastic trim.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D002",
+        "vehicle_part": "windshield",
+        "damage_type": "glass_damage",
+        "severity": "Minor",
+        "confidence": 0.92,
+        "supporting_images": [
+          "IMAGE_02"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_02",
+            "box": [
+              325,
+              372,
+              350,
+              396
+            ]
+          }
+        ],
+        "description": "Small star chip / bullseye impact mark on the driver-side windshield glass.",
+        "is_duplicate": false
+      },
+      {
+        "finding_id": "D003",
+        "vehicle_part": "driver_door",
+        "damage_type": "Wheel_or_rim_damage",
+        "severity": "Minor",
+        "confidence": 0.93,
+        "supporting_images": [
+          "IMAGE_04"
+        ],
+        "bounding_boxes": [
+          {
+            "image_id": "IMAGE_04",
+            "box": [
+              285,
+              605,
+              350,
+              665
+            ]
+          }
+        ],
+        "description": "Curb rash abrasion along the upper edge of the alloy wheel rim.",
+        "is_duplicate": false
+      }
+    ],
+    "undamaged_visible_parts": [
+      "hood",
+      "grille",
+      "headlights",
+      "roof"
+    ],
+    "uncertain_findings": [],
+    "overall_assessment": "Vehicle displays moderate front bumper scuffing, minor glass chip on the windshield, and mild rim damage on the front wheel.",
+    "inspection_id": "INS-1789216621384",
+    "is_paid": true,
+    "user_info": {
+      "name": "55555555",
+      "email": "vivid.dhruvipatel@gmail.com",
+      "paid_at": "2026-09-12T12:37:44.266Z",
+      "amount": 3
+    },
+    "sha256_hash": "sha256-rwl0qidtthnmtydelsa"
+  }
+}
