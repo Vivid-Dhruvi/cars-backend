@@ -715,7 +715,7 @@ app.get('/api/reports/:id/pdf', (req, res) => {
   doc.rect(40, yPos, 515, 45).fill('#0F172A');
   doc.fillColor('#38BDF8').fontSize(8.5).font('Helvetica-Bold').text('CRYPTOGRAPHIC SHA-256 AUDIT STAMP', 55, yPos + 8);
   doc.fillColor('#94A3B8').fontSize(7.5).font('Helvetica').text(`Signature Hash: ${sha256Hash}`, 55, yPos + 22);
-  doc.fillColor('#10B981').fontSize(7.5).font('Helvetica-Bold').text('✓ Certified Tamper-Proof Audit Certificate by CarsInsure Inspection Engine', 55, yPos + 32);
+  doc.fillColor('#10B981').fontSize(7.5).font('Helvetica-Bold').text('Certified Tamper-Proof Audit Certificate by CarsInsure Inspection Engine', 55, yPos + 32);
 
   doc.end();
 });
