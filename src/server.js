@@ -25,6 +25,11 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: '50mb' }));
 
+// Health Check Root Endpoint
+app.get('/', (req, res) => {
+  res.json({ success: true, message: 'CarsInsure Backend API is Live on Vercel Serverless!' });
+});
+
 const os = require('os');
 
 // Storage configuration (Vercel serverless compatible)
