@@ -13,10 +13,14 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// Local storage upload configuration
-const uploadsDir = path.join(__dirname, '../uploads');
+const os = require('os');
+
+// Storage configuration (Vercel serverless compatible)
+const uploadsDir = process.env.VERCEL ? os.tmpdir() : path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  } catch (e) {}
 }
 app.use('/uploads', express.static(uploadsDir));
 
@@ -57,7 +61,10 @@ const inspectionSchema = new mongoose.Schema({
 const InspectionModel = mongoose.model('Inspection', inspectionSchema);
 
 // Hybrid Data Store (In-Memory + File Persistence + MongoDB)
-const dbFilePath = path.join(__dirname, '../data_store.json');
+const dbFilePath = process.env.VERCEL 
+  ? path.join(os.tmpdir(), 'data_store.json') 
+  : path.join(__dirname, '../data_store.json');
+
 let inMemoryDb = {};
 
 if (fs.existsSync(dbFilePath)) {
@@ -72,7 +79,7 @@ const saveLocalDb = () => {
   try {
     fs.writeFileSync(dbFilePath, JSON.stringify(inMemoryDb, null, 2));
   } catch (e) {
-    console.error('Failed writing persistent store:', e.message);
+    // Fail silently on read-only serverless filesystems
   }
 };
 
@@ -696,7 +703,11 @@ app.get('/api/reports/:id/pdf', (req, res) => {
   doc.end();
 });
 
-app.listen(PORT, () => {
-  console.log(`CarsInsure Backend API running on http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`CarsInsure Backend API running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
 
