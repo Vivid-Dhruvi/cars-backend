@@ -78,12 +78,30 @@ const inspectionSchema = new mongoose.Schema({
 
 const InspectionModel = mongoose.model('Inspection', inspectionSchema);
 
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI)
-  .then(async () => {
+let isConnected = false;
+async function connectToDatabase() {
+  if (isConnected || mongoose.connection.readyState === 1) {
+    isConnected = true;
+    return;
+  }
+  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/carsinsure';
+  if (process.env.VERCEL && (uri.includes('127.0.0.1') || uri.includes('localhost'))) {
+    throw new Error('Local MongoDB (127.0.0.1) cannot be reached from Vercel in the cloud. Please add your cloud MongoDB Atlas connection string (MONGODB_URI) in Vercel Environment Variables.');
+  }
+  try {
+    const db = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000,
+    });
+    isConnected = db.connections[0].readyState === 1;
     console.log('✅ Connected to MongoDB database successfully.');
-  })
-  .catch(err => console.error('❌ MongoDB connection error:', err.message));
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err.message);
+    throw new Error(`Database connection failed: ${err.message}. Ensure your MongoDB Atlas IP Access List allows 0.0.0.0/0 for Vercel.`);
+  }
+}
+
+// Initial connection attempt on boot
+connectToDatabase().catch(e => console.error('MongoDB boot connection notice:', e.message));
 
 // Client Guideline System Prompt
 const SYSTEM_PROMPT = `
@@ -210,6 +228,7 @@ app.post('/api/ocr/contract', upload.single('contract'), (req, res) => {
 // Submit Photos for AI Inspection (Gemini / Vision API Engine)
 app.post('/api/inspection/analyze', async (req, res) => {
   try {
+    await connectToDatabase();
     const { vehicleData, photos } = req.body;
     const inspectionId = 'INS-' + Date.now();
 
@@ -544,6 +563,7 @@ Return ONLY a raw valid JSON object without markdown formatting:
 // Paywall Checkout
 app.post('/api/payment/checkout', async (req, res) => {
   try {
+    await connectToDatabase();
     const { inspectionId, name, email, amount } = req.body;
     if (!inspectionId) {
       return res.status(400).json({ success: false, error: 'Inspection ID is required' });
@@ -576,6 +596,7 @@ app.post('/api/payment/checkout', async (req, res) => {
 // Inspection Session Fetch Endpoint (Database)
 app.get('/api/inspections/:id', async (req, res) => {
   try {
+    await connectToDatabase();
     const record = await InspectionModel.findOne({ inspection_id: req.params.id }).lean();
     if (!record) {
       return res.status(404).json({ success: false, error: 'Inspection not found' });
@@ -589,6 +610,7 @@ app.get('/api/inspections/:id', async (req, res) => {
 // Admin Inspections Log Endpoint (Database)
 app.get('/api/admin/inspections', async (req, res) => {
   try {
+    await connectToDatabase();
     const list = await InspectionModel.find().sort({ created_at: -1 }).lean();
     res.json({ success: true, count: list.length, inspections: list });
   } catch (error) {
@@ -599,6 +621,7 @@ app.get('/api/admin/inspections', async (req, res) => {
 // PDF Inspection Certificate Generation Endpoint
 app.get('/api/reports/:id/pdf', async (req, res) => {
   try {
+    await connectToDatabase();
     const PDFDocument = require('pdfkit');
     const inspectionId = req.params.id;
     const record = (await InspectionModel.findOne({ inspection_id: inspectionId }).lean()) || {};
