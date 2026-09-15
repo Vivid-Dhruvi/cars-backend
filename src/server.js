@@ -659,14 +659,6 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
       }
     }
 
-    // Fallback if record does not have photos saved (e.g. older scan before update or demo scan)
-    if (!urlStr) {
-      try {
-        const { DAMAGED_CAR_PHOTO } = require('./demoPhotoData');
-        urlStr = DAMAGED_CAR_PHOTO;
-      } catch (e) {}
-    }
-
     if (urlStr && urlStr.startsWith('data:image')) {
       try {
         const base64Data = urlStr.replace(/^data:image\/\w+;base64,/, '');
@@ -687,7 +679,7 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
 
       // Logo icon block
       doc.roundedRect(MARGIN + 12, MARGIN + 13, 42, 42, 6).fill(COLOR_SECONDARY);
-      doc.fillColor('#FFFFFF').fontSize(16).font('Helvetica-Bold').text('CI', MARGIN + 23, MARGIN + 26);
+      doc.fillColor('#FFFFFF').fontSize(16).font('Helvetica-Bold').text('CI', MARGIN + 12, MARGIN + 25.5, { width: 42, align: 'center' });
 
       // Title & Subtitle
       doc.fillColor('#FFFFFF').fontSize(15).font('Helvetica-Bold').text('CarsInsure', MARGIN + 64, MARGIN + 17);
@@ -698,14 +690,14 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
       const metaBoxW = 160;
       const metaBoxX = PAGE_WIDTH - MARGIN - metaBoxW - 10;
       doc.roundedRect(metaBoxX, MARGIN + 12, metaBoxW, 44, 4).fill(COLOR_SECONDARY).stroke('#334155');
-      doc.fillColor('#94A3B8').fontSize(6.5).font('Helvetica-Bold').text('REPORT ID', metaBoxX + 8, MARGIN + 17);
+      doc.fillColor('#94A3B8').fontSize(6.5).font('Helvetica-Bold').text('REPORT ID', metaBoxX + 8, MARGIN + 16.5);
       doc.fillColor('#FFFFFF').fontSize(8.5).font('Helvetica-Bold').text(inspectionId, metaBoxX + 8, MARGIN + 26);
-      doc.fillColor('#38BDF8').fontSize(7).font('Helvetica').text(`ISSUED: ${scanDate}`, metaBoxX + 8, MARGIN + 40);
+      doc.fillColor('#38BDF8').fontSize(7).font('Helvetica').text(`ISSUED: ${scanDate}`, metaBoxX + 8, MARGIN + 40.5);
     } else {
       doc.rect(MARGIN, MARGIN, USABLE_WIDTH, 28).fill(COLOR_PRIMARY);
       doc.rect(MARGIN, MARGIN, USABLE_WIDTH, 2).fill(COLOR_ACCENT);
       const titleText = sectionTitle || 'CarsInsure AI Inspection Certificate (Continued)';
-      doc.fillColor('#FFFFFF').fontSize(8.5).font('Helvetica-Bold').text(titleText, MARGIN + 10, MARGIN + 10);
+      doc.fillColor('#FFFFFF').fontSize(8.5).font('Helvetica-Bold').text(titleText, MARGIN + 10, MARGIN + 9.5);
       doc.fillColor('#94A3B8').fontSize(7.5).font('Helvetica').text(`Report ID: ${inspectionId}`, PAGE_WIDTH - MARGIN - 160, MARGIN + 10, { width: 150, align: 'right' });
     }
   };
@@ -714,68 +706,68 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
   // PAGE 1: EXECUTIVE SUMMARY & DAMAGE INVENTORY TABLE
   // ══════════════════════════════════════════════════════════
   drawPageHeader(true);
-  let curY = MARGIN + 76;
+  let curY = MARGIN + 78;
 
   // 1. Client & Verification Banner (Full-Width, perfectly aligned)
-  const clientCardH = 54;
-  doc.roundedRect(MARGIN, curY, USABLE_WIDTH, clientCardH, 5).fill(COLOR_BG_LIGHT).stroke(COLOR_BORDER);
-  doc.rect(MARGIN, curY, USABLE_WIDTH, 18).fill('#E2E8F0');
-  doc.fillColor(COLOR_PRIMARY).fontSize(7).font('Helvetica-Bold').text('CLIENT & VERIFICATION DETAILS', MARGIN + 10, curY + 5.5);
+  const clientCardH = 64;
+  doc.roundedRect(MARGIN, curY, USABLE_WIDTH, clientCardH, 6).fill(COLOR_BG_LIGHT).stroke(COLOR_BORDER);
+  doc.rect(MARGIN, curY, USABLE_WIDTH, 20).fill('#E2E8F0');
+  doc.fillColor(COLOR_PRIMARY).fontSize(7.5).font('Helvetica-Bold').text('CLIENT & VERIFICATION DETAILS', MARGIN + 12, curY + 6.5);
 
   const clientName = userInfo.name || 'Authorized Client';
   const clientEmail = userInfo.email || 'client@carsinsure.com';
 
-  const colWidth = (USABLE_WIDTH - 20) / 3;
-  const valY1 = curY + 24;
-  const valY2 = curY + 38;
+  const valY1 = curY + 27;
+  const valY2 = curY + 44;
 
-  // Col 1: Customer Details
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Bold').text('Client Name:', MARGIN + 10, valY1);
-  doc.fillColor(COLOR_TEXT).fontSize(7).font('Helvetica').text(clientName, MARGIN + 68, valY1, { width: colWidth - 72, ellipsis: true });
+  // Col 1: Customer Details (Width 195pt so emails never wrap)
+  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Client Name:', MARGIN + 12, valY1);
+  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica-Bold').text(clientName, MARGIN + 68, valY1, { width: 135, ellipsis: true });
 
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Bold').text('Client Email:', MARGIN + 10, valY2);
-  doc.fillColor(COLOR_TEXT).fontSize(7).font('Helvetica').text(clientEmail, MARGIN + 68, valY2, { width: colWidth - 72, ellipsis: true });
+  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Client Email:', MARGIN + 12, valY2);
+  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(clientEmail, MARGIN + 68, valY2, { width: 135, ellipsis: true });
 
-  // Col 2: Inspection ID & Timestamp
-  const c2X = MARGIN + colWidth + 10;
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Bold').text('Inspection Ref:', c2X, valY1);
-  doc.fillColor(COLOR_TEXT).fontSize(7).font('Helvetica-Bold').text(inspectionId, c2X + 68, valY1);
+  // Col 2: Inspection ID & Timestamp (Width 165pt)
+  const c2X = MARGIN + 215;
+  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Inspection Ref:', c2X, valY1);
+  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica-Bold').text(inspectionId, c2X + 70, valY1);
 
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Bold').text('Timestamp:', c2X, valY2);
-  doc.fillColor(COLOR_TEXT).fontSize(7).font('Helvetica').text(scanDate, c2X + 68, valY2);
+  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Timestamp:', c2X, valY2);
+  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(scanDate, c2X + 70, valY2);
 
-  // Col 3: Payment State & Protocol
-  const c3X = MARGIN + colWidth * 2 + 10;
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Bold').text('Status:', c3X, valY1);
-  doc.fillColor(COLOR_SUCCESS).fontSize(7).font('Helvetica-Bold').text('PAID & UNLOCKED ($3.00)', c3X + 50, valY1);
+  // Col 3: Payment State & Protocol (Width 140pt)
+  const c3X = MARGIN + 385;
+  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Status:', c3X, valY1);
+  doc.fillColor(COLOR_SUCCESS).fontSize(7.5).font('Helvetica-Bold').text('PAID & UNLOCKED ($3.00)', c3X + 44, valY1);
 
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Bold').text('Protocol:', c3X, valY2);
-  doc.fillColor(COLOR_ACCENT).fontSize(7).font('Helvetica-Bold').text('14-Angle Full AI Scan', c3X + 50, valY2);
+  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Protocol:', c3X, valY2);
+  doc.fillColor(COLOR_ACCENT).fontSize(7.5).font('Helvetica-Bold').text('14-Angle Full AI Scan', c3X + 44, valY2);
 
-  curY += clientCardH + 12;
+  curY += clientCardH + 16;
 
   // 2. Executive Assessment & Scorecard (Clean breathing room)
-  doc.fontSize(7.5).font('Helvetica');
-  const textOptions = { width: USABLE_WIDTH - 24, lineGap: 2.5 };
+  doc.fontSize(8).font('Helvetica');
+  const textOptions = { width: USABLE_WIDTH - 28, lineGap: 3.5 };
   const assessmentHeight = doc.heightOfString(overallAssessment, textOptions);
 
-  const statsBoxHeight = 36;
-  const assessmentCardPadding = 18;
-  const assessmentCardTotalHeight = 30 + assessmentHeight + 12 + statsBoxHeight + assessmentCardPadding;
+  const statsBoxHeight = 44;
+  const assessmentCardPadding = 20;
+  const assessmentCardTotalHeight = 34 + assessmentHeight + 14 + statsBoxHeight + assessmentCardPadding;
 
-  doc.roundedRect(MARGIN, curY, USABLE_WIDTH, assessmentCardTotalHeight, 5).fill('#F0FDF4').stroke('#86EFAC');
+  doc.roundedRect(MARGIN, curY, USABLE_WIDTH, assessmentCardTotalHeight, 6).fill('#F0FDF4').stroke('#86EFAC');
 
-  // Badge header (Vertically centered)
-  doc.roundedRect(MARGIN + 10, curY + 10, 130, 16, 3).fill(COLOR_SUCCESS);
-  doc.fillColor('#FFFFFF').fontSize(7).font('Helvetica-Bold').text('EXECUTIVE ASSESSMENT', MARGIN + 10, curY + 14.5, { width: 130, align: 'center' });
+  // Badge header (Mathematically centered)
+  const headPillX = MARGIN + 12, headPillY = curY + 12, headPillW = 140, headPillH = 18;
+  doc.roundedRect(headPillX, headPillY, headPillW, headPillH, 3).fill(COLOR_SUCCESS);
+  doc.fillColor('#FFFFFF').fontSize(7.5).font('Helvetica-Bold').text('EXECUTIVE ASSESSMENT', headPillX, curY + 18.3, { width: headPillW, align: 'center' });
 
   // Assessment Text with clear spacing
-  const assessmentTextY = curY + 34;
-  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(overallAssessment, MARGIN + 12, assessmentTextY, textOptions);
+  const assessmentTextY = curY + 38;
+  doc.fillColor(COLOR_TEXT).fontSize(8).font('Helvetica').text(overallAssessment, MARGIN + 14, assessmentTextY, textOptions);
 
   // 4-Stat Metric Bar
-  const statsY = assessmentTextY + assessmentHeight + 12;
-  const statBoxW = (USABLE_WIDTH - 32) / 4;
+  const statsY = assessmentTextY + assessmentHeight + 14;
+  const statBoxW = (USABLE_WIDTH - 36) / 4;
 
   const stats = [
     { label: 'DAMAGE FINDINGS', val: `${findings.length} Detected`, color: findings.length > 0 ? COLOR_DANGER : COLOR_SUCCESS },
@@ -785,51 +777,51 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
   ];
 
   stats.forEach((st, idx) => {
-    const sX = MARGIN + 12 + (idx * (statBoxW + 2.6));
+    const sX = MARGIN + 12 + (idx * (statBoxW + 3.8));
     doc.roundedRect(sX, statsY, statBoxW, statsBoxHeight, 4).fill('#FFFFFF').stroke('#BBF7D0');
-    doc.fillColor(COLOR_TEXT_MUTED).fontSize(6).font('Helvetica-Bold').text(st.label, sX + 4, statsY + 6.5, { width: statBoxW - 8, align: 'center' });
-    doc.fillColor(st.color).fontSize(8.5).font('Helvetica-Bold').text(st.val, sX + 4, statsY + 18.5, { width: statBoxW - 8, align: 'center' });
+    doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Bold').text(st.label, sX + 4, statsY + 8.5, { width: statBoxW - 8, align: 'center' });
+    doc.fillColor(st.color).fontSize(10).font('Helvetica-Bold').text(st.val, sX + 4, statsY + 23, { width: statBoxW - 8, align: 'center' });
   });
 
-  curY += assessmentCardTotalHeight + 14;
+  curY += assessmentCardTotalHeight + 18;
 
   // 3. Detailed Damage Inventory Table (Clean vertical alignment)
-  doc.fillColor(COLOR_PRIMARY).fontSize(10).font('Helvetica-Bold').text('Detailed Physical Damage Inventory', MARGIN, curY);
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7.5).font('Helvetica').text('Itemized breakdown of localized vehicle anomalies with normalized bounding coordinates', MARGIN, curY + 13);
+  doc.fillColor(COLOR_PRIMARY).fontSize(11).font('Helvetica-Bold').text('Detailed Physical Damage Inventory', MARGIN, curY);
+  doc.fillColor(COLOR_TEXT_MUTED).fontSize(8).font('Helvetica').text('Itemized breakdown of localized vehicle anomalies with normalized bounding coordinates', MARGIN, curY + 14);
 
-  curY += 26;
+  curY += 30;
 
-  const colIndexW = 20;
-  const colPartW = 125;
-  const colTypeW = 110;
+  const colIndexW = 22;
+  const colPartW = 120;
+  const colTypeW = 105;
   const colSevW = 75;
   const colConfW = 45;
   const colPhotoW = USABLE_WIDTH - (colIndexW + colPartW + colTypeW + colSevW + colConfW);
 
   const drawTableHeader = (y) => {
-    doc.rect(MARGIN, y, USABLE_WIDTH, 20).fill(COLOR_PRIMARY);
-    doc.fillColor('#FFFFFF').fontSize(7).font('Helvetica-Bold');
-    doc.text('#', MARGIN + 6, y + 6);
-    doc.text('VEHICLE COMPONENT', MARGIN + colIndexW + 6, y + 6);
-    doc.text('DAMAGE TYPE', MARGIN + colIndexW + colPartW + 6, y + 6);
-    doc.text('SEVERITY', MARGIN + colIndexW + colPartW + colTypeW + 6, y + 6);
-    doc.text('CONF.', MARGIN + colIndexW + colPartW + colTypeW + colSevW + 6, y + 6);
-    doc.text('PHOTO ANGLE & COORDS', MARGIN + colIndexW + colPartW + colTypeW + colSevW + colConfW + 6, y + 6);
-    return y + 20;
+    doc.rect(MARGIN, y, USABLE_WIDTH, 24).fill(COLOR_PRIMARY);
+    doc.fillColor('#FFFFFF').fontSize(7.5).font('Helvetica-Bold');
+    doc.text('#', MARGIN + 6, y + 8);
+    doc.text('VEHICLE COMPONENT', MARGIN + colIndexW + 6, y + 8);
+    doc.text('DAMAGE TYPE', MARGIN + colIndexW + colPartW + 6, y + 8);
+    doc.text('SEVERITY', MARGIN + colIndexW + colPartW + colTypeW + 6, y + 8);
+    doc.text('CONF.', MARGIN + colIndexW + colPartW + colTypeW + colSevW + 6, y + 8);
+    doc.text('PHOTO ANGLE & COORDS', MARGIN + colIndexW + colPartW + colTypeW + colSevW + colConfW + 6, y + 8);
+    return y + 24;
   };
 
   curY = drawTableHeader(curY);
 
   if (findings.length === 0) {
-    doc.rect(MARGIN, curY, USABLE_WIDTH, 34).fill(COLOR_BG_LIGHT).stroke(COLOR_BORDER);
-    doc.fillColor(COLOR_SUCCESS).fontSize(8).font('Helvetica-Bold').text('✓ Zero Physical Damage Detected Across All 14 Inspected Angles.', MARGIN + 12, curY + 12);
-    curY += 38;
+    doc.rect(MARGIN, curY, USABLE_WIDTH, 44).fill(COLOR_BG_LIGHT).stroke(COLOR_BORDER);
+    doc.fillColor(COLOR_SUCCESS).fontSize(8.5).font('Helvetica-Bold').text('✓ Zero Physical Damage Detected Across All 14 Inspected Angles.', MARGIN + 14, curY + 17);
+    curY += 48;
   } else {
     findings.forEach((item, idx) => {
       const desc = item.description || 'Verified visual surface deviation detected during scan.';
-      doc.fontSize(6.5).font('Helvetica');
-      const descH = doc.heightOfString(`Note: ${desc}`, { width: USABLE_WIDTH - colIndexW - 16 });
-      const rowTotalH = Math.max(34, 20 + descH + 6);
+      doc.fontSize(7).font('Helvetica');
+      const descH = doc.heightOfString(`Note: ${desc}`, { width: USABLE_WIDTH - colIndexW - 16, lineGap: 1.5 });
+      const rowTotalH = Math.max(50, 24 + descH + 10);
 
       if (curY + rowTotalH > BOTTOM_THRESHOLD) {
         doc.addPage();
@@ -842,38 +834,41 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
       doc.rect(MARGIN, curY, USABLE_WIDTH, rowTotalH).fill(isEven ? '#FFFFFF' : COLOR_BG_LIGHT).stroke(COLOR_BORDER);
 
       // 1. Index
-      doc.fillColor(COLOR_PRIMARY).fontSize(7.5).font('Helvetica-Bold').text(`${idx + 1}`, MARGIN + 6, curY + 6);
+      doc.fillColor(COLOR_PRIMARY).fontSize(8).font('Helvetica-Bold').text(`${idx + 1}`, MARGIN + 6, curY + 8);
 
       // 2. Component Name
       const rawPart = (item.vehicle_part || 'Vehicle Part').replace(/_/g, ' ').toUpperCase();
-      doc.fillColor(COLOR_PRIMARY).fontSize(7.5).font('Helvetica-Bold').text(rawPart, MARGIN + colIndexW + 6, curY + 6, { width: colPartW - 10, ellipsis: true });
+      doc.fillColor(COLOR_PRIMARY).fontSize(8).font('Helvetica-Bold').text(rawPart, MARGIN + colIndexW + 6, curY + 8, { width: colPartW - 10, ellipsis: true });
 
       // 3. Damage Type
       const damageType = (item.damage_type || 'Damage').replace(/_/g, ' ').toUpperCase();
-      doc.fillColor(COLOR_SECONDARY).fontSize(7).font('Helvetica').text(damageType, MARGIN + colIndexW + colPartW + 6, curY + 6, { width: colTypeW - 10, ellipsis: true });
+      doc.fillColor(COLOR_SECONDARY).fontSize(7.5).font('Helvetica').text(damageType, MARGIN + colIndexW + colPartW + 6, curY + 8, { width: colTypeW - 10, ellipsis: true });
 
-      // 4. Severity Pill (Centered vertically in row)
+      // 4. Severity Pill (Mathematically centered)
       const severity = item.severity || 'Minor';
       const sevColor = severity === 'Severe' ? COLOR_DANGER : severity === 'Moderate' ? COLOR_WARNING : COLOR_SUCCESS;
       const sevBg = severity === 'Severe' ? '#FEE2E2' : severity === 'Moderate' ? '#FEF3C7' : '#DCFCE7';
 
       const pillX = MARGIN + colIndexW + colPartW + colTypeW + 6;
-      doc.roundedRect(pillX, curY + 4, 58, 14, 3).fill(sevBg).stroke(sevColor);
-      doc.fillColor(sevColor).fontSize(6.5).font('Helvetica-Bold').text(severity.toUpperCase(), pillX, curY + 7.5, { width: 58, align: 'center' });
+      const pillY = curY + 4.5;
+      const pillW = 58;
+      const pillH = 16;
+      doc.roundedRect(pillX, pillY, pillW, pillH, 3).fill(sevBg).stroke(sevColor);
+      doc.fillColor(sevColor).fontSize(6.5).font('Helvetica-Bold').text(severity.toUpperCase(), pillX, curY + 10.17, { width: pillW, align: 'center' });
 
       // 5. Confidence
       const conf = Math.round((item.confidence || 0.95) * 100);
-      doc.fillColor(COLOR_PRIMARY).fontSize(7.5).font('Helvetica-Bold').text(`${conf}%`, MARGIN + colIndexW + colPartW + colTypeW + colSevW + 6, curY + 6);
+      doc.fillColor(COLOR_PRIMARY).fontSize(8).font('Helvetica-Bold').text(`${conf}%`, MARGIN + colIndexW + colPartW + colTypeW + colSevW + 6, curY + 8);
 
       // 6. Photo Angle & Normalized Coordinates
       const suppImg = item.supporting_images?.[0] || 'IMAGE_01';
       const boxCoords = item.bounding_boxes?.[0]?.box ? `[${item.bounding_boxes[0].box.join(', ')}]` : '[N/A]';
       const coordsX = MARGIN + colIndexW + colPartW + colTypeW + colSevW + colConfW + 6;
-      doc.fillColor(COLOR_ACCENT).fontSize(7).font('Helvetica-Bold').text(suppImg, coordsX, curY + 6);
-      doc.fillColor(COLOR_TEXT_MUTED).fontSize(6).font('Helvetica-Oblique').text(boxCoords, coordsX + 52, curY + 6.5, { width: colPhotoW - 56, ellipsis: true });
+      doc.fillColor(COLOR_ACCENT).fontSize(7.5).font('Helvetica-Bold').text(suppImg, coordsX, curY + 8);
+      doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica-Oblique').text(boxCoords, coordsX + 54, curY + 8.5, { width: colPhotoW - 58, ellipsis: true });
 
       // Sub-row: Observation Note
-      doc.fillColor(COLOR_TEXT_MUTED).fontSize(6.5).font('Helvetica').text(`Note: ${desc}`, MARGIN + colIndexW + 6, curY + 20, { width: USABLE_WIDTH - colIndexW - 16, lineGap: 1 });
+      doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica').text(`Note: ${desc}`, MARGIN + colIndexW + 6, curY + 26, { width: USABLE_WIDTH - colIndexW - 16, lineGap: 1.5 });
 
       curY += rowTotalH;
     });
@@ -934,9 +929,13 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
     const sevColor = severity === 'Severe' ? COLOR_DANGER : severity === 'Moderate' ? COLOR_WARNING : COLOR_SUCCESS;
     const sevBg = severity === 'Severe' ? '#FEE2E2' : severity === 'Moderate' ? '#FEF3C7' : '#DCFCE7';
 
-    // Severity badge aligned with card header
-    doc.roundedRect(cardX + photoCardW - 68, photoY + 4, 60, 14, 3).fill(sevBg).stroke(sevColor);
-    doc.fillColor(sevColor).fontSize(6.5).font('Helvetica-Bold').text(severity.toUpperCase(), cardX + photoCardW - 68, photoY + 7.5, { width: 60, align: 'center' });
+    // Severity badge aligned with card header (Mathematically centered)
+    const cardBadgeX = cardX + photoCardW - 68;
+    const cardBadgeY = photoY + 3.5;
+    const cardBadgeW = 60;
+    const cardBadgeH = 15;
+    doc.roundedRect(cardBadgeX, cardBadgeY, cardBadgeW, cardBadgeH, 3).fill(sevBg).stroke(sevColor);
+    doc.fillColor(sevColor).fontSize(6.5).font('Helvetica-Bold').text(severity.toUpperCase(), cardBadgeX, photoY + 8.67, { width: cardBadgeW, align: 'center' });
 
     // Render Actual Uploaded Image
     const imgX = cardX + 8;
