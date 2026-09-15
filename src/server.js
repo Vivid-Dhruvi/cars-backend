@@ -160,6 +160,24 @@ ALLOWED SEVERITY VALUES:
 "Severe"
 "Uncertain"
 
+Visual Rules for Severity Mapping:
+Minor: Superficial damage that only affects the top coat or surface level.
+- Scratches: Under 6 inches (15 cm) in length and has not cut down to the metal/primer (can often be buffed out).
+- Dents: Shallow dings less than the size of a golf ball with no sharp creases or chipped paint.
+- Scuffs/Rim Rash: Light scraping on the surface edge of a hubcap or bumper trim.
+
+Moderate: Clear structural or deep paint damage confined to a single panel.
+- Scratches: Deep scratches over 6 inches long, or shorter scratches that clearly expose the grey/black under-primer or bare metal.
+- Dents: Larger depressions up to the size of a dinner plate or minor creases along structural body lines.
+- Cracks/Glass: A single stone chip ("bullseye" or "star") on the windshield outside the driver's direct line of sight, or a small split in a plastic bumper.
+
+Severe: Significant structural deformation, safety hazards, or damage crossing multiple panels.
+- Scratches/Dents: Large, crushed panels, deep gashes spanning across multiple doors/panels, or deployed airbags.
+- Cracks/Glass: Spreading spiderweb cracks across the windshield, or shattered glass panels.
+- Broken/Missing Parts: A bumper completely detached on one side, smashed headlight lenses, or missing side-view mirrors.
+
+Uncertain: The damage is clearly visible, but lighting conditions, glares, or reflections make it impossible to determine the true depth, length, or substrate exposure.
+
 ANALYSIS PROCESS:
 First, inspect all 14 images.
 Second, identify the vehicle and relevant visible vehicle parts.
