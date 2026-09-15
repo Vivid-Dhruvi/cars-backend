@@ -622,6 +622,17 @@ app.get('/api/admin/inspections', async (req, res) => {
 app.get('/api/reports/:id/pdf', async (req, res) => {
   try {
     await connectToDatabase();
+    
+    // Explicit standard font imports for Vercel Serverless bundling
+    try {
+      require('pdfkit/standard-fonts/Helvetica');
+      require('pdfkit/standard-fonts/HelveticaBold');
+      require('pdfkit/standard-fonts/CourierBold');
+      require('pdfkit/standard-fonts/Courier');
+    } catch (fontErr) {
+      console.warn('Standard font bundling notice:', fontErr.message);
+    }
+
     const PDFDocument = require('pdfkit');
     const inspectionId = req.params.id;
     const record = (await InspectionModel.findOne({ inspection_id: inspectionId }).lean()) || {};
