@@ -1,4 +1,4 @@
-const { transporter } = require('../config/mailer');
+const { getTransporter } = require('../config/mailer');
 const { buildInspectionPdfBuffer } = require('./pdfService');
 
 async function sendInspectionReportEmail(inspectionRecord, recipientEmail) {
@@ -95,8 +95,11 @@ async function sendInspectionReportEmail(inspectionRecord, recipientEmail) {
 </html>
 `;
 
+    const senderEmail = process.env.SMTP_USER || process.env.GMAIL_USER || process.env.EMAIL_USER;
+    const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || (senderEmail ? `"CarsInsure AI" <${senderEmail}>` : '"CarsInsure AI" <reports@carsinsure.com>');
+
     const mailOptions = {
-      from: process.env.EMAIL_FROM || '"CarsInsure AI" <reports@carsinsure.com>',
+      from: fromAddress,
       to: to,
       subject: `CarsInsure Inspection Certificate [${inspectionId}] - ${findings.length} Findings Cataloged`,
       html: htmlContent,
@@ -110,6 +113,7 @@ async function sendInspectionReportEmail(inspectionRecord, recipientEmail) {
     };
 
     console.log(`✉️ Sending report email to ${to}...`);
+    const transporter = getTransporter();
     const info = await transporter.sendMail(mailOptions);
     console.log(`✅ Report email dispatched successfully to ${to} (Message ID: ${info.messageId})`);
 

@@ -1,13 +1,17 @@
 const nodemailer = require('nodemailer');
 
-function createTransporter() {
+function getTransporter() {
   const host = process.env.SMTP_HOST;
   const port = parseInt(process.env.SMTP_PORT || '587', 10);
-  const user = process.env.SMTP_USER || process.env.GMAIL_USER;
-  const pass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+  const rawUser = process.env.SMTP_USER || process.env.GMAIL_USER || process.env.EMAIL_USER;
+  const rawPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || process.env.EMAIL_PASS || process.env.SMTP_PASSWORD;
 
-  if (user && pass) {
-    if (user.includes('@gmail.com') && !host) {
+  const user = rawUser ? rawUser.trim() : null;
+  // Remove spaces that Google puts in 16-digit App Passwords (e.g. 'abcd efgh ijkl mnop' -> 'abcdefghijklmnop')
+  const pass = rawPass ? rawPass.trim().replace(/\s+/g, '') : null;
+
+  if (user && pass && user !== 'your_gmail_address@gmail.com' && pass !== 'your_16_digit_app_password') {
+    if ((user.includes('@gmail.com') || process.env.SMTP_SERVICE === 'gmail') && !host) {
       return nodemailer.createTransport({
         service: 'gmail',
         auth: { user, pass },
@@ -32,15 +36,13 @@ function createTransporter() {
       console.log(`   Attachments: ${(mailOptions.attachments || []).map(a => a.filename).join(', ') || 'None'}`);
       return {
         messageId: `mock-${Date.now()}`,
-        response: '250 Mock email accepted',
+        response: '250 Mock email accepted (Simulated mode)',
       };
     },
   };
 }
 
-const transporter = createTransporter();
-
 module.exports = {
-  transporter,
-  createTransporter,
+  getTransporter,
 };
+

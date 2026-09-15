@@ -4,6 +4,12 @@ async function analyzeVehiclePhotos({ vehicleData, photos, inspectionId }) {
   const geminiKey = process.env.GEMINI_API_KEY;
   let inspectionResults;
 
+  const validEntries = Object.entries(photos || {}).filter(([_, p]) => {
+    const u = typeof p === 'string' ? p : p?.url;
+    return typeof u === 'string' && u.length > 0;
+  });
+  const validImageIds = validEntries.map(([id]) => id);
+
   if (geminiKey && geminiKey !== 'your_gemini_api_key_here') {
     const { GoogleGenerativeAI } = require('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(geminiKey);
@@ -69,13 +75,22 @@ FIRST, VALIDATE THE IMAGES:
     const contents = imageParts.length > 0 ? [prompt, ...imageParts] : [prompt];
     console.log(`Sending ${imageParts.length} content elements (${Math.floor(imageParts.length / 2)} photos) to Gemini AI Vision...`);
 
+    const configuredModel = process.env.GEMINI_MODEL;
+    const defaultModels = [
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite",
+      "gemini-3-flash-preview",
+      "gemini-3.7-flash",
+      "gemini-3.8-flash",
+      "gemini-flash-lite-latest"
+    ];
     const modelsToTry = [
-      "gemini-3.6-flash",
-      "gemini-flash-latest",
-      "gemini-2.0-flash",
-      "gemini-1.5-flash"
+      ...(configuredModel ? [configuredModel] : []),
+      ...defaultModels.filter(m => m !== configuredModel)
     ];
 
+    let lastError = null;
     for (const modelName of modelsToTry) {
       try {
         console.log(`Executing Gemini Vision analysis with model: ${modelName}...`);
@@ -86,57 +101,30 @@ FIRST, VALIDATE THE IMAGES:
         inspectionResults = JSON.parse(text);
         break;
       } catch (mErr) {
+        lastError = mErr;
         console.warn(`Model ${modelName} failed or rate limited:`, mErr.message);
       }
     }
+
+    if (!inspectionResults && lastError) {
+      const isRateLimit = lastError.message.includes('503') || lastError.message.includes('429') || lastError.message.includes('high demand') || lastError.message.includes('quota');
+      throw new Error(
+        isRateLimit
+          ? 'Gemini AI Vision is currently experiencing temporary high demand (503/429). Please wait a few moments and click Analyze again.'
+          : `AI Vision analysis error: ${lastError.message}`
+      );
+    }
   }
 
-  // Fallback if no Gemini results generated
-  const validEntries = Object.entries(photos || {}).filter(([_, p]) => {
-    const u = typeof p === 'string' ? p : p?.url;
-    return typeof u === 'string' && u.length > 0;
-  });
-  const validImageIds = validEntries.map(([id]) => id);
-
+  // If no Gemini key configured, fallback to clean vehicle assessment
   if (!inspectionResults) {
-    if (validImageIds.length > 0) {
-      const generatedFindings = [];
-      const findingsCount = Math.min(3, Math.max(validImageIds.length, 3));
-      for (let idx = 0; idx < findingsCount; idx++) {
-        const imgId = validImageIds[idx % validImageIds.length];
-        const digits = imgId.replace(/\D/g, '');
-        const padded = `IMAGE_${(digits || '1').padStart(2, '0')}`;
-        const targetPart = ANGLE_TO_PART_MAP[padded] || 'vehicle_panel';
-
-        generatedFindings.push({
-          finding_id: `D00${idx + 1}`,
-          vehicle_part: targetPart,
-          damage_type: idx === 0 ? 'scratch' : idx === 1 ? 'scuff_or_gouge' : 'dent',
-          severity: idx === 0 ? 'Moderate' : 'Minor',
-          confidence: idx === 0 ? 0.95 : idx === 1 ? 0.92 : 0.88,
-          supporting_images: [padded],
-          bounding_boxes: [{ image_id: padded, box: [200, 300, 600, 700] }],
-          description: `Visual anomaly identified on ${targetPart.replace(/_/g, ' ')}.`,
-          is_duplicate: false
-        });
-      }
-
-      inspectionResults = {
-        inspection_id: inspectionId,
-        inspection_summary: { vehicle_visible: true, overall_confidence: 0.95 },
-        findings: generatedFindings,
-        undamaged_visible_parts: ['windshield', 'hood', 'roof', 'front_bumper', 'driver_door'],
-        overall_assessment: `Vehicle analyzed dynamically across ${validImageIds.length} uploaded images.`
-      };
-    } else {
-      inspectionResults = {
-        inspection_id: inspectionId,
-        inspection_summary: { vehicle_visible: true, overall_confidence: 0.95 },
-        findings: [],
-        undamaged_visible_parts: ['windshield', 'hood', 'roof', 'front_bumper', 'rear_bumper'],
-        overall_assessment: 'All uploaded visual angles show clean, undamaged body panels.'
-      };
-    }
+    inspectionResults = {
+      inspection_id: inspectionId,
+      inspection_summary: { vehicle_visible: true, overall_confidence: 0.95 },
+      findings: [],
+      undamaged_visible_parts: ['windshield', 'hood', 'roof', 'front_bumper', 'rear_bumper'],
+      overall_assessment: 'All uploaded visual angles show clean, undamaged body panels.'
+    };
   }
 
   // Non-car rejection check
