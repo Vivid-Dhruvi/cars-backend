@@ -748,67 +748,74 @@ app.get('/api/reports/:id/pdf', async (req, res) => {
   doc.rect(MARGIN, curY, USABLE_WIDTH, 20).fill('#E2E8F0');
   doc.fillColor(COLOR_PRIMARY).fontSize(7.5).font('Helvetica-Bold').text('CLIENT & VERIFICATION DETAILS', MARGIN + 12, curY + 6.5);
 
-  const clientName = userInfo.name || 'Authorized Client';
-  const clientEmail = userInfo.email || 'client@carsinsure.com';
+    const photoEntries = Object.values(photos || {}).filter(p => {
+      if (!p) return false;
+      if (typeof p === 'string') return p.trim().length > 0;
+      return Boolean(p.url || p.data);
+    });
+    const uploadedPhotoCount = photoEntries.length || 1;
 
-  const valY1 = curY + 27;
-  const valY2 = curY + 44;
+    const clientName = userInfo.name || 'Authorized Client';
+    const clientEmail = userInfo.email || 'client@carsinsure.com';
 
-  // Col 1: Customer Details (Width 195pt so emails never wrap)
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Client Name:', MARGIN + 12, valY1);
-  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica-Bold').text(clientName, MARGIN + 68, valY1, { width: 135, ellipsis: true });
+    const valY1 = curY + 27;
+    const valY2 = curY + 44;
 
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Client Email:', MARGIN + 12, valY2);
-  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(clientEmail, MARGIN + 68, valY2, { width: 135, ellipsis: true });
+    // Col 1: Customer Details (Width 195pt so emails never wrap)
+    doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Client Name:', MARGIN + 12, valY1);
+    doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica-Bold').text(clientName, MARGIN + 68, valY1, { width: 135, ellipsis: true });
 
-  // Col 2: Inspection ID & Timestamp (Width 165pt)
-  const c2X = MARGIN + 215;
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Inspection Ref:', c2X, valY1);
-  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica-Bold').text(inspectionId, c2X + 70, valY1);
+    doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Client Email:', MARGIN + 12, valY2);
+    doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(clientEmail, MARGIN + 68, valY2, { width: 135, ellipsis: true });
 
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Timestamp:', c2X, valY2);
-  doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(scanDate, c2X + 70, valY2);
+    // Col 2: Inspection ID & Timestamp (Width 165pt)
+    const c2X = MARGIN + 215;
+    doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Inspection Ref:', c2X, valY1);
+    doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica-Bold').text(inspectionId, c2X + 70, valY1);
 
-  // Col 3: Payment State & Protocol (Width 140pt)
-  const c3X = MARGIN + 385;
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Status:', c3X, valY1);
-  doc.fillColor(COLOR_SUCCESS).fontSize(7.5).font('Helvetica-Bold').text('PAID & UNLOCKED ($3.00)', c3X + 44, valY1);
+    doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Timestamp:', c2X, valY2);
+    doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(scanDate, c2X + 70, valY2);
 
-  doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Protocol:', c3X, valY2);
-  doc.fillColor(COLOR_ACCENT).fontSize(7.5).font('Helvetica-Bold').text('14-Angle Full AI Scan', c3X + 44, valY2);
+    // Col 3: Payment State & Protocol (Width 140pt)
+    const c3X = MARGIN + 385;
+    doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Status:', c3X, valY1);
+    doc.fillColor(COLOR_SUCCESS).fontSize(7.5).font('Helvetica-Bold').text('PAID & UNLOCKED ($3.00)', c3X + 44, valY1);
 
-  curY += clientCardH + 16;
+    doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Protocol:', c3X, valY2);
+    doc.fillColor(COLOR_ACCENT).fontSize(7.5).font('Helvetica-Bold').text(uploadedPhotoCount >= 14 ? '14-Angle Full AI Scan' : `${uploadedPhotoCount}-Angle Targeted Scan`, c3X + 44, valY2);
 
-  // 2. Executive Assessment & Scorecard (Clean breathing room)
-  doc.fontSize(8).font('Helvetica');
-  const textOptions = { width: USABLE_WIDTH - 28, lineGap: 3.5 };
-  const assessmentHeight = doc.heightOfString(overallAssessment, textOptions);
+    curY += clientCardH + 16;
 
-  const statsBoxHeight = 44;
-  const assessmentCardPadding = 20;
-  const assessmentCardTotalHeight = 34 + assessmentHeight + 14 + statsBoxHeight + assessmentCardPadding;
+    // 2. Executive Assessment & Scorecard (Clean breathing room)
+    doc.fontSize(8).font('Helvetica');
+    const textOptions = { width: USABLE_WIDTH - 28, lineGap: 3.5 };
+    const assessmentHeight = doc.heightOfString(overallAssessment, textOptions);
 
-  doc.roundedRect(MARGIN, curY, USABLE_WIDTH, assessmentCardTotalHeight, 6).fill('#F0FDF4').stroke('#86EFAC');
+    const statsBoxHeight = 44;
+    const assessmentCardPadding = 20;
+    const assessmentCardTotalHeight = 34 + assessmentHeight + 14 + statsBoxHeight + assessmentCardPadding;
 
-  // Badge header (Mathematically centered)
-  const headPillX = MARGIN + 12, headPillY = curY + 12, headPillW = 140, headPillH = 18;
-  doc.roundedRect(headPillX, headPillY, headPillW, headPillH, 3).fill(COLOR_SUCCESS);
-  doc.fillColor('#FFFFFF').fontSize(7.5).font('Helvetica-Bold').text('EXECUTIVE ASSESSMENT', headPillX, curY + 18.3, { width: headPillW, align: 'center' });
+    doc.roundedRect(MARGIN, curY, USABLE_WIDTH, assessmentCardTotalHeight, 6).fill('#F0FDF4').stroke('#86EFAC');
 
-  // Assessment Text with clear spacing
-  const assessmentTextY = curY + 38;
-  doc.fillColor(COLOR_TEXT).fontSize(8).font('Helvetica').text(overallAssessment, MARGIN + 14, assessmentTextY, textOptions);
+    // Badge header (Mathematically centered)
+    const headPillX = MARGIN + 12, headPillY = curY + 12, headPillW = 140, headPillH = 18;
+    doc.roundedRect(headPillX, headPillY, headPillW, headPillH, 3).fill(COLOR_SUCCESS);
+    doc.fillColor('#FFFFFF').fontSize(7.5).font('Helvetica-Bold').text('EXECUTIVE ASSESSMENT', headPillX, curY + 18.3, { width: headPillW, align: 'center' });
 
-  // 4-Stat Metric Bar
-  const statsY = assessmentTextY + assessmentHeight + 14;
-  const statBoxW = (USABLE_WIDTH - 36) / 4;
+    // Assessment Text with clear spacing
+    const assessmentTextY = curY + 38;
+    doc.fillColor(COLOR_TEXT).fontSize(8).font('Helvetica').text(overallAssessment, MARGIN + 14, assessmentTextY, textOptions);
 
-  const stats = [
-    { label: 'DAMAGE FINDINGS', val: `${findings.length} Detected`, color: findings.length > 0 ? COLOR_DANGER : COLOR_SUCCESS },
-    { label: 'PHOTOS PROCESSED', val: '14 / 14 Angles', color: COLOR_PRIMARY },
-    { label: 'AI CONFIDENCE', val: '96% Overall', color: COLOR_ACCENT },
-    { label: 'CLEAN PANELS', val: `${undamagedParts.length || 8} Verified`, color: COLOR_SUCCESS }
-  ];
+    // 4-Stat Metric Bar
+    const statsY = assessmentTextY + assessmentHeight + 14;
+    const statBoxW = (USABLE_WIDTH - 36) / 4;
+
+    const stats = [
+      { label: 'DAMAGE FINDINGS', val: `${findings.length} Detected`, color: findings.length > 0 ? COLOR_DANGER : COLOR_SUCCESS },
+      { label: 'PHOTOS PROCESSED', val: `${uploadedPhotoCount} / 14 Angles`, color: COLOR_PRIMARY },
+      { label: 'AI CONFIDENCE', val: '96% Overall', color: COLOR_ACCENT },
+      { label: 'CLEAN PANELS', val: `${undamagedParts.length || 8} Verified`, color: COLOR_SUCCESS }
+    ];
 
   stats.forEach((st, idx) => {
     const sX = MARGIN + 12 + (idx * (statBoxW + 3.8));
