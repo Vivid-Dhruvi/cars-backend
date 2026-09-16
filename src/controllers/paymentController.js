@@ -179,7 +179,8 @@ async function checkoutPayment(req, res) {
       message: 'Payment confirmed via iCredit and report emailed to client',
       transactionId: 'TXN-' + Math.floor(100000 + Math.random() * 900000),
       sha256Hash: finalRecord.sha256_hash,
-      pdfDownloadUrl: `/api/reports/${inspectionId}/pdf`
+      pdfDownloadUrl: `/api/reports/${inspectionId}/pdf`,
+      report: finalRecord.toObject()
     });
   } catch (error) {
     console.error('Checkout error:', error);
