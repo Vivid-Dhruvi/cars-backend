@@ -47,7 +47,27 @@ async function sendEmailReport(req, res) {
   }
 }
 
+async function getReportById(req, res) {
+  try {
+    await connectToDatabase();
+    const inspectionId = req.params.id;
+    const record = await Inspection.findOne({ inspection_id: inspectionId }).lean();
+    if (!record) {
+      return res.status(404).json({ success: false, error: 'Inspection session not found' });
+    }
+    res.json({
+      success: true,
+      report: record
+    });
+  } catch (error) {
+    console.error('Get report error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
 module.exports = {
+  getReportById,
   streamPdfReport,
   sendEmailReport,
 };
+

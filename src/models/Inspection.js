@@ -10,6 +10,7 @@ const inspectionSchema = new mongoose.Schema({
   undamaged_visible_parts: { type: Array, default: [] },
   overall_assessment: { type: String, default: '' },
   is_paid: { type: Boolean, default: false },
+  email_sent: { type: Boolean, default: false },
   sha256_hash: { type: String, default: '' },
   created_at: { type: Date, default: Date.now }
 });
