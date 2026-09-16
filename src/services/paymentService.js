@@ -2,7 +2,7 @@ const ICREDIT_SANDBOX_ENDPOINT = 'https://testicredit.rivhit.co.il/API/PaymentPa
 const ICREDIT_PROD_ENDPOINT = 'https://icredit.rivhit.co.il/API/PaymentPageRequest.svc';
 
 function getICreditBaseUrl() {
-  const env = (process.env.ICREDIT_ENV || process.env.NODE_ENV || 'development').toLowerCase();
+  const env = (process.env.ICREDIT_ENV || '').toLowerCase();
   return env === 'production' ? ICREDIT_PROD_ENDPOINT : ICREDIT_SANDBOX_ENDPOINT;
 }
 
