@@ -12,7 +12,16 @@ const PDFDocument = require('pdfkit');
 
 function createPdfDocument(record, streamOrBufferCallback) {
   const inspectionId = record.inspection_id || 'INS-DEMO';
-  const findings = record.findings || [];
+  const rawFindings = record.findings || [];
+  const uncertainFindings = (record.uncertain_findings || []).map((uf, i) => ({
+    ...uf,
+    finding_id: uf.finding_id || `UNC-${i + 1}`,
+    severity: uf.severity || 'Uncertain'
+  }));
+  const rawIds = new Set(rawFindings.map(f => f.finding_id));
+  const newUncertain = uncertainFindings.filter(u => !rawIds.has(u.finding_id));
+  const findings = [...rawFindings, ...newUncertain];
+
   const vehicleInfo = record.vehicle_info || {};
   const photos = record.photos || {};
   const userInfo = record.user_info || {
@@ -33,17 +42,19 @@ function createPdfDocument(record, streamOrBufferCallback) {
     bufferPages: true 
   });
 
-  // Design Tokens
-  const COLOR_PRIMARY = '#0F172A';     // Deep Slate
-  const COLOR_SECONDARY = '#1E293B';   // Slate Dark
-  const COLOR_ACCENT = '#0284C7';      // Tech Cyan
-  const COLOR_TEXT = '#0F172A';        // Main Text
+  // Design Tokens (Aligned with CarsInsure Theme)
+  const COLOR_PRIMARY = '#022A5B';     // Brand Deep Navy
+  const COLOR_SECONDARY = '#0B3A78';   // Navy Dark / Accent
+  const COLOR_ACCENT = '#0284C7';      // Tech Cyan / Sky
+  const COLOR_TEXT = '#0F172A';        // Main Slate Text
   const COLOR_TEXT_MUTED = '#64748B';  // Secondary Text
   const COLOR_BORDER = '#CBD5E1';      // Border Gray
   const COLOR_BG_LIGHT = '#F8FAFC';    // Light Background
   const COLOR_SUCCESS = '#059669';     // Emerald
-  const COLOR_WARNING = '#D97706';     // Amber
-  const COLOR_DANGER = '#DC2626';      // Crimson
+  const COLOR_WARNING = '#D97706';     // Amber (Minor)
+  const COLOR_MODERATE = '#E11D48';    // Rose (Moderate)
+  const COLOR_DANGER = '#DC2626';      // Crimson (Severe)
+  const COLOR_UNCERTAIN = '#64748B';   // Slate (Uncertain)
 
   const PAGE_WIDTH = 595.28;
   const PAGE_HEIGHT = 841.89;
@@ -275,9 +286,11 @@ function createPdfDocument(record, streamOrBufferCallback) {
 
       // Severity Pill (Centering: pillY + (pillH/2) - (capHeight/2))
       const sev = (item.severity || 'Minor').toUpperCase();
-      const isSev = sev === 'SEVERE', isMod = sev === 'MODERATE';
-      const pillBg = isSev ? '#FEE2E2' : isMod ? '#FEF3C7' : '#F1F5F9';
-      const pillText = isSev ? COLOR_DANGER : isMod ? COLOR_WARNING : COLOR_TEXT;
+      const isSev = sev === 'SEVERE';
+      const isMod = sev === 'MODERATE';
+      const isUnc = sev === 'UNCERTAIN';
+      const pillBg = isSev ? '#FEE2E2' : isMod ? '#FFE4E6' : isUnc ? '#F1F5F9' : '#FEF3C7';
+      const pillText = isSev ? COLOR_DANGER : isMod ? COLOR_MODERATE : isUnc ? COLOR_UNCERTAIN : COLOR_WARNING;
 
       const pillW = 46, pillH = 16;
       const pillX = rowX + ((colSevW - pillW) / 2);
@@ -359,12 +372,15 @@ function createPdfDocument(record, streamOrBufferCallback) {
 
       // Severity Pill
       const sev = (item.severity || 'Minor').toUpperCase();
+      const isSev = sev === 'SEVERE';
+      const isMod = sev === 'MODERATE';
+      const isUnc = sev === 'UNCERTAIN';
       const pillW = 56;
       const pillH = 13.5;
       const pillX = cardX + cardW - pillW - 8;
       const pillY = cardY + 7.5;
-      const pillBg = sev === 'SEVERE' ? '#FEE2E2' : sev === 'MODERATE' ? '#FEF3C7' : '#DCFCE7';
-      const pillText = sev === 'SEVERE' ? '#DC2626' : sev === 'MODERATE' ? '#D97706' : '#15803D';
+      const pillBg = isSev ? '#FEE2E2' : isMod ? '#FFE4E6' : isUnc ? '#F1F5F9' : '#FEF3C7';
+      const pillText = isSev ? COLOR_DANGER : isMod ? COLOR_MODERATE : isUnc ? COLOR_UNCERTAIN : COLOR_WARNING;
 
       doc.roundedRect(pillX, pillY, pillW, pillH, 3).fill(pillBg);
       doc.fillColor(pillText).fontSize(6).font('Helvetica-Bold')
@@ -398,7 +414,12 @@ function createPdfDocument(record, streamOrBufferCallback) {
             const bw = Math.max(6, ((box[3] - box[1]) / 1000) * renderedW);
             const bh = Math.max(6, ((box[2] - box[0]) / 1000) * renderedH);
 
-            doc.rect(bx, by, bw, bh).lineWidth(1.8).stroke(COLOR_DANGER);
+            const boxStrokeColor = isSev ? COLOR_DANGER : isMod ? COLOR_MODERATE : isUnc ? COLOR_UNCERTAIN : COLOR_WARNING;
+            if (isUnc) {
+              doc.rect(bx, by, bw, bh).lineWidth(1.8).dash(3, { space: 2 }).stroke(boxStrokeColor).undash();
+            } else {
+              doc.rect(bx, by, bw, bh).lineWidth(1.8).stroke(boxStrokeColor);
+            }
           }
         } catch (imgErr) {
           doc.fillColor('#64748B').fontSize(7).font('Helvetica').text('Photo processing unavailable', imgBoxX + 6, imgBoxY + (imgBoxH / 2) - 4, { width: imgBoxW - 12, align: 'center' });
