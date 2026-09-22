@@ -65,9 +65,32 @@ async function getReportById(req, res) {
   }
 }
 
+async function generatePdfFromData(req, res) {
+  try {
+    const { vehicleData, analysisResults, photos } = req.body;
+    
+    // Construct a record structure that pdfService expects
+    const record = {
+      inspection_id: vehicleData?.inspection_id || `REQ-${Date.now()}`,
+      findings: analysisResults?.findings || [],
+      uncertain_findings: analysisResults?.uncertain_findings || [],
+      vehicle_info: vehicleData || {},
+      photos: photos || {},
+      overall_assessment: analysisResults?.overall_assessment || '',
+      undamaged_visible_parts: analysisResults?.undamaged_visible_parts || [],
+      created_at: new Date()
+    };
+
+    generateInspectionPdf(record, res);
+  } catch (error) {
+    console.error('Dynamic PDF Generation Error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
 module.exports = {
   getReportById,
   streamPdfReport,
   sendEmailReport,
+  generatePdfFromData,
 };
-
