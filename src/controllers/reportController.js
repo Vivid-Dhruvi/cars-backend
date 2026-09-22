@@ -78,6 +78,7 @@ async function generatePdfFromData(req, res) {
       photos: photos || {},
       overall_assessment: analysisResults?.overall_assessment || '',
       undamaged_visible_parts: analysisResults?.undamaged_visible_parts || [],
+      sha256_hash: analysisResults?.sha256_hash || null,
       created_at: new Date()
     };
 

@@ -168,6 +168,12 @@ FIRST, VALIDATE THE IMAGES:
 
       return finding;
     });
+    
+    // Generate real Cryptographic SHA-256 Hash of the findings
+    const crypto = require('crypto');
+    const dataToHash = JSON.stringify(inspectionResults.findings);
+    const hash = crypto.createHash('sha256').update(dataToHash).digest('hex');
+    inspectionResults.sha256_hash = `sha256-${hash}`;
   }
 
   return inspectionResults;
