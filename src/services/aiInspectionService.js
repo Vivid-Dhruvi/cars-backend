@@ -33,6 +33,8 @@ CRITICAL MATCHING RULES FOR SUPPORTING_IMAGES & VEHICLE_PART:
 - IMAGE_13 is REAR-RIGHT WHEEL -> Vehicle part MUST be "rear_right_wheel".
 - IMAGE_14 is FRONT-RIGHT WHEEL -> Vehicle part MUST be "front_right_wheel".
 
+Please ensure your findings strictly adhere to these matching rules. If you see damage in IMAGE_01, do not call it a "rear_bumper" or "door".
+
 IMPORTANT: Standard factory components like WINDSHIELD WIPER BLADES, WIPER ARMS, HOOD VENTS, REFLECTIONS, GLARE, LIGHT DUST, AND SUN REFLECTIONS ARE NOT DAMAGE. DO NOT MARK THEM AS DAMAGE.
 IF NO ACTUAL ACCIDENT/SCRATCH/DENT DAMAGE IS VISIBLE ON AN IMAGE, RETURN AN EMPTY FINDINGS ARRAY ("findings": []).
 
