@@ -67,7 +67,7 @@ async function getReportById(req, res) {
 
 async function generatePdfFromData(req, res) {
   try {
-    const { vehicleData, analysisResults, photos } = req.body;
+    const { vehicleData, analysisResults, photos, userInfo } = req.body;
     
     // Construct a record structure that pdfService expects
     const record = {
@@ -75,6 +75,7 @@ async function generatePdfFromData(req, res) {
       findings: analysisResults?.findings || [],
       uncertain_findings: analysisResults?.uncertain_findings || [],
       vehicle_info: vehicleData || {},
+      user_info: userInfo || {},
       photos: photos || {},
       overall_assessment: analysisResults?.overall_assessment || '',
       undamaged_visible_parts: analysisResults?.undamaged_visible_parts || [],
