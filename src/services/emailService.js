@@ -19,6 +19,15 @@ async function sendInspectionReportEmail(inspectionRecord, recipientEmail) {
     console.log(`📄 Generating PDF buffer for email attachment to ${to}...`);
     const pdfBuffer = await buildInspectionPdfBuffer(inspectionRecord);
 
+    // Save a certified PDF copy to local server disk (Cloudways storage)
+    let pdfUrl = null;
+    try {
+      const { saveInspectionPdf } = require('./storageService');
+      pdfUrl = await saveInspectionPdf(inspectionId, pdfBuffer);
+    } catch (savePdfErr) {
+      console.warn('⚠️ PDF storage warning:', savePdfErr.message);
+    }
+
     const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -120,7 +129,8 @@ async function sendInspectionReportEmail(inspectionRecord, recipientEmail) {
     return {
       success: true,
       messageId: info.messageId,
-      recipient: to
+      recipient: to,
+      pdfUrl
     };
   } catch (error) {
     console.error('❌ Failed sending inspection report email:', error);

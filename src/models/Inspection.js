@@ -12,6 +12,7 @@ const inspectionSchema = new mongoose.Schema({
   is_paid: { type: Boolean, default: false },
   email_sent: { type: Boolean, default: false },
   sha256_hash: { type: String, default: '' },
+  pdf_url: { type: String, default: '' },
   created_at: { type: Date, default: Date.now }
 });
 

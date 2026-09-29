@@ -70,20 +70,31 @@ function createPdfDocument(record, streamOrBufferCallback) {
     let urlStr = null;
     if (photos && typeof photos === 'object' && Object.keys(photos).length > 0) {
       const digits = (angleKey || '').replace(/\D/g, '');
-      const padded = digits.padStart(2, '0');
-      const photoEntry = photos[padded] || photos[digits] || photos[angleKey] || photos[`IMAGE_${padded}`] || photos[`IMAGE_${digits}`];
+      const padded = digits ? digits.padStart(2, '0') : '01';
+      const photoEntry = 
+        photos[padded] || 
+        photos[digits] || 
+        photos[angleKey] || 
+        photos[`photo_${digits}`] || 
+        photos[`photo_${padded}`] || 
+        photos[`IMAGE_${padded}`] || 
+        photos[`IMAGE_${digits}`];
+
       if (photoEntry) {
-        urlStr = typeof photoEntry === 'string' ? photoEntry : photoEntry.url || photoEntry.data;
+        urlStr = typeof photoEntry === 'string' ? photoEntry : photoEntry.url || photoEntry.data || photoEntry.filePath;
       }
       if (!urlStr) {
-        const firstVal = Object.values(photos).find(p => p && (typeof p === 'string' || p.url || p.data));
+        const firstVal = Object.values(photos).find(p => p && (typeof p === 'string' || p.url || p.data || p.filePath));
         if (firstVal) {
-          urlStr = typeof firstVal === 'string' ? firstVal : firstVal.url || firstVal.data;
+          urlStr = typeof firstVal === 'string' ? firstVal : firstVal.url || firstVal.data || firstVal.filePath;
         }
       }
     }
 
-    if (urlStr && urlStr.startsWith('data:image')) {
+    if (!urlStr) return null;
+
+    // Case 1: Base64 data URL
+    if (urlStr.startsWith('data:image')) {
       try {
         const base64Data = urlStr.replace(/^data:image\/\w+;base64,/, '');
         return Buffer.from(base64Data, 'base64');
@@ -91,6 +102,31 @@ function createPdfDocument(record, streamOrBufferCallback) {
         return null;
       }
     }
+
+    // Case 2: Local server disk file (Cloudways storage)
+    try {
+      let cleanPath = urlStr;
+      // Remove any domain if full URL was provided
+      if (cleanPath.includes('/uploads/')) {
+        cleanPath = '/uploads/' + cleanPath.split('/uploads/')[1];
+      }
+
+      const candidatePaths = [
+        path.join(__dirname, '../../', cleanPath),
+        path.join(__dirname, '../../uploads', cleanPath.replace(/^\/?uploads\/?/, '')),
+        path.join(__dirname, '../uploads', cleanPath.replace(/^\/?uploads\/?/, '')),
+        cleanPath
+      ];
+
+      for (const p of candidatePaths) {
+        if (fs.existsSync(p)) {
+          return fs.readFileSync(p);
+        }
+      }
+    } catch (diskErr) {
+      console.warn('⚠️ Could not load photo from disk for PDF:', diskErr.message);
+    }
+
     return null;
   };
 

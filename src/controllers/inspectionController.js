@@ -2,6 +2,7 @@ const { connectToDatabase } = require('../config/db');
 const Inspection = require('../models/Inspection');
 const { analyzeVehiclePhotos } = require('../services/aiInspectionService');
 const { sendInspectionReportEmail } = require('../services/emailService');
+const { saveInspectionPhotos } = require('../services/storageService');
 
 async function analyzeInspection(req, res) {
   try {
@@ -20,7 +21,17 @@ async function analyzeInspection(req, res) {
     inspectionResults.user_info = userInfo || {};
     inspectionResults.is_paid = true; // Free tool stage: 100% unlocked
 
-    // Safety check against MongoDB 16MB BSON document limit
+    // ── Persistent Server Disk Storage (Cloudways / SSD) ──
+    // Saves all original photos to disk so they can be used to train custom AI models later
+    let storedPhotos = {};
+    try {
+      storedPhotos = await saveInspectionPhotos(inspectionId, photos);
+    } catch (saveErr) {
+      console.warn('⚠️ Disk photo save warning:', saveErr.message);
+    }
+    inspectionResults.photos = storedPhotos;
+
+    /* ── PREVIOUS DIRECT MONGO STORAGE (PRESERVED) ──
     let photosToSave = photos || {};
     try {
       const estimatedBytes = Buffer.byteLength(JSON.stringify(photosToSave), 'utf8');
@@ -43,7 +54,7 @@ async function analyzeInspection(req, res) {
     } catch (sizeErr) {
       console.warn('Photo size check warning:', sizeErr.message);
     }
-    inspectionResults.photos = photosToSave;
+    ── END PREVIOUS DIRECT MONGO STORAGE ── */
 
     await Inspection.findOneAndUpdate(
       { inspection_id: inspectionId },
@@ -57,11 +68,15 @@ async function analyzeInspection(req, res) {
       sendInspectionReportEmail(inspectionResults, userInfo.email)
         .then(async (mailResult) => {
           if (mailResult && mailResult.success) {
+            const updateFields = { email_sent: true };
+            if (mailResult.pdfUrl) {
+              updateFields.pdf_url = mailResult.pdfUrl;
+            }
             await Inspection.updateOne(
               { inspection_id: inspectionId },
-              { $set: { email_sent: true } }
+              { $set: updateFields }
             );
-            console.log(`✅ Marked email_sent: true in database for inspection: ${inspectionId}`);
+            console.log(`✅ Marked email_sent: true and saved pdf_url in database for inspection: ${inspectionId}`);
           }
         })
         .catch((mailErr) => {
