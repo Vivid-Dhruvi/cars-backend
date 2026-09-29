@@ -1,3 +1,12 @@
+// Ensure global.fetch is available in Node < 18
+if (!global.fetch) {
+  const nodeFetch = require('node-fetch');
+  global.fetch = nodeFetch;
+  global.Headers = nodeFetch.Headers;
+  global.Request = nodeFetch.Request;
+  global.Response = nodeFetch.Response;
+}
+
 const ICREDIT_SANDBOX_ENDPOINT = 'https://testicredit.rivhit.co.il/API/PaymentPageRequest.svc';
 const ICREDIT_PROD_ENDPOINT = 'https://icredit.rivhit.co.il/API/PaymentPageRequest.svc';
 

@@ -1,3 +1,12 @@
+// Ensure global.fetch is available in Node < 18
+if (!global.fetch) {
+  const nodeFetch = require('node-fetch');
+  global.fetch = nodeFetch;
+  global.Headers = nodeFetch.Headers;
+  global.Request = nodeFetch.Request;
+  global.Response = nodeFetch.Response;
+}
+
 const { SYSTEM_PROMPT, ANGLE_DESCRIPTIONS, ANGLE_TO_PART_MAP } = require('../utils/constants');
 
 async function analyzeVehiclePhotos({ vehicleData, photos, inspectionId }) {

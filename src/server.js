@@ -1,3 +1,12 @@
+// Polyfill global fetch for Node environments < 18 (e.g. Node 16)
+if (!global.fetch) {
+  const nodeFetch = require('node-fetch');
+  global.fetch = nodeFetch;
+  global.Headers = nodeFetch.Headers;
+  global.Request = nodeFetch.Request;
+  global.Response = nodeFetch.Response;
+}
+
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');

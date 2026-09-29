@@ -88,7 +88,7 @@ async function sendInspectionReportEmail(inspectionRecord, recipientEmail) {
     <div class="footer">
       <div>Cryptographic Verification Signature:</div>
       <div class="hash-code">${sha256Hash}</div>
-      <p style="margin: 12px 0 0; color: #94A3B8;">&copy; ${new Date().getFullYear()} CarsInsure AI Vehicle Intelligence Platform.</p>
+      <p style="margin: 12px 0 0; color: #94A3B8;">&copy; ${new Date().getFullYear()} CarInsuRent AI Vehicle Intelligence Platform.</p>
     </div>
   </div>
 </body>
@@ -96,16 +96,16 @@ async function sendInspectionReportEmail(inspectionRecord, recipientEmail) {
 `;
 
     const senderEmail = process.env.SMTP_USER || process.env.GMAIL_USER || process.env.EMAIL_USER;
-    const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || (senderEmail ? `"CarsInsure AI" <${senderEmail}>` : '"CarsInsure AI" <reports@carsinsure.com>');
+    const fromAddress = process.env.SMTP_FROM || process.env.EMAIL_FROM || (senderEmail ? `"CarInsuRent AI" <${senderEmail}>` : '"CarInsuRent AI" <reports@carinsurent.com>');
 
     const mailOptions = {
       from: fromAddress,
       to: to,
-      subject: `CarsInsure Inspection Certificate [${inspectionId}] - ${findings.length} Findings Cataloged`,
+      subject: `CarInsuRent Inspection Certificate [${inspectionId}] - ${findings.length} Findings Cataloged`,
       html: htmlContent,
       attachments: [
         {
-          filename: `CarsInsure_Official_Report_${inspectionId}.pdf`,
+          filename: `CarInsuRent_Inspection_Certificate_${inspectionId}.pdf`,
           content: pdfBuffer,
           contentType: 'application/pdf'
         }

@@ -20,14 +20,7 @@ async function streamPdfReport(req, res) {
       return res.status(404).json({ success: false, error: 'Inspection record not found' });
     }
 
-    const hasDamage = Array.isArray(record.findings) && record.findings.length > 0;
-    if (hasDamage && !record.is_paid) {
-      return res.status(402).json({
-        success: false,
-        error: 'Payment required to download official damage inspection certificate.'
-      });
-    }
-
+    // Free tool stage: all generated reports are freely downloadable
     generateInspectionPdf(record, res);
   } catch (error) {
     console.error('PDF Generation Error:', error);

@@ -8,6 +8,8 @@ try {
   console.warn('Standard font bundling notice:', fontErr.message);
 }
 
+const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 const PDFDocument = require('pdfkit');
 
@@ -99,12 +101,23 @@ function createPdfDocument(record, streamOrBufferCallback) {
       doc.rect(MARGIN, MARGIN, USABLE_WIDTH, 3).fill(COLOR_ACCENT);
 
       // Logo icon block
-      doc.roundedRect(MARGIN + 12, MARGIN + 13, 42, 42, 6).fill(COLOR_SECONDARY);
-      doc.fillColor('#FFFFFF').fontSize(16).font('Helvetica-Bold').text('CI', MARGIN + 12, MARGIN + 25.5, { width: 42, align: 'center' });
+      const logoPath = path.join(__dirname, '../../assets/logo.png');
+      if (fs.existsSync(logoPath)) {
+        try {
+          doc.roundedRect(MARGIN + 12, MARGIN + 13, 42, 42, 6).fill('#FFFFFF');
+          doc.image(logoPath, MARGIN + 14, MARGIN + 15, { width: 38, height: 38, fit: [38, 38] });
+        } catch (e) {
+          doc.roundedRect(MARGIN + 12, MARGIN + 13, 42, 42, 6).fill(COLOR_SECONDARY);
+          doc.fillColor('#FFFFFF').fontSize(14).font('Helvetica-Bold').text('CIR', MARGIN + 12, MARGIN + 27, { width: 42, align: 'center' });
+        }
+      } else {
+        doc.roundedRect(MARGIN + 12, MARGIN + 13, 42, 42, 6).fill(COLOR_SECONDARY);
+        doc.fillColor('#FFFFFF').fontSize(14).font('Helvetica-Bold').text('CIR', MARGIN + 12, MARGIN + 27, { width: 42, align: 'center' });
+      }
 
       // Title & Subtitle
-      doc.fillColor('#FFFFFF').fontSize(15).font('Helvetica-Bold').text('CarsInsure', MARGIN + 64, MARGIN + 17);
-      doc.fillColor('#38BDF8').fontSize(8).font('Helvetica-Bold').text('OFFICIAL AI AUTOMOTIVE DAMAGE CERTIFICATE', MARGIN + 64, MARGIN + 35);
+      doc.fillColor('#FFFFFF').fontSize(15).font('Helvetica-Bold').text('CarInsuRent AI', MARGIN + 64, MARGIN + 17);
+      doc.fillColor('#38BDF8').fontSize(8).font('Helvetica-Bold').text('OFFICIAL CAR RENTAL DAMAGE INSPECTION CERTIFICATE', MARGIN + 64, MARGIN + 35);
       doc.fillColor('#94A3B8').fontSize(7.5).font('Helvetica').text('Certified Multi-Angle Visual Inspection & Cryptographic Audit Record', MARGIN + 64, MARGIN + 47);
 
       // Right Inspection Metadata Badge
@@ -117,7 +130,7 @@ function createPdfDocument(record, streamOrBufferCallback) {
     } else {
       doc.rect(MARGIN, MARGIN, USABLE_WIDTH, 28).fill(COLOR_PRIMARY);
       doc.rect(MARGIN, MARGIN, USABLE_WIDTH, 2).fill(COLOR_ACCENT);
-      const titleText = sectionTitle || 'CarsInsure AI Inspection Certificate (Continued)';
+      const titleText = sectionTitle || 'CarInsuRent AI Inspection Certificate (Continued)';
       doc.fillColor('#FFFFFF').fontSize(8.5).font('Helvetica-Bold').text(titleText, MARGIN + 10, MARGIN + 9.5);
       doc.fillColor('#94A3B8').fontSize(7.5).font('Helvetica').text(`Report ID: ${inspectionId}`, PAGE_WIDTH - MARGIN - 160, MARGIN + 10, { width: 150, align: 'right' });
     }
