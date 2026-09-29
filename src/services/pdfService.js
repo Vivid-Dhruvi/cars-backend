@@ -8,6 +8,7 @@ try {
   console.warn('Standard font bundling notice:', fontErr.message);
 }
 
+const crypto = require('crypto');
 const PDFDocument = require('pdfkit');
 
 function createPdfDocument(record, streamOrBufferCallback) {
@@ -29,7 +30,7 @@ function createPdfDocument(record, streamOrBufferCallback) {
     email: 'client@carsinsure.com',
     paid_at: new Date().toISOString()
   };
-  const sha256Hash = record.sha256_hash || ('sha256-' + Buffer.from(inspectionId + Date.now()).toString('hex').substring(0, 32));
+  const sha256Hash = record.sha256_hash || ('sha256-' + crypto.createHash('sha256').update(JSON.stringify(findings) + inspectionId).digest('hex'));
   const overallAssessment = record.overall_assessment || 'Automated multi-angle computer vision inspection completed. Visual damage areas cataloged.';
   const undamagedParts = record.undamaged_visible_parts || [];
   const scanDate = record.created_at 

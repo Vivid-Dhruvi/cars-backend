@@ -17,7 +17,31 @@ async function analyzeInspection(req, res) {
     inspectionResults.inspection_id = inspectionId;
     inspectionResults.vehicle_info = vehicleData || {};
     inspectionResults.is_paid = false;
-    inspectionResults.photos = photos;
+
+    // Safety check against MongoDB 16MB BSON document limit
+    let photosToSave = photos || {};
+    try {
+      const estimatedBytes = Buffer.byteLength(JSON.stringify(photosToSave), 'utf8');
+      if (estimatedBytes > 10 * 1024 * 1024) {
+        console.warn(`⚠️ Large photo payload (${(estimatedBytes / (1024 * 1024)).toFixed(2)} MB). Optimizing storage for MongoDB document limit.`);
+        const neededAngles = new Set(
+          (inspectionResults.findings || []).flatMap(f => f.supporting_images || []).map(s => s.replace(/\D/g, '').padStart(2, '0'))
+        );
+        const trimmed = {};
+        for (const [k, v] of Object.entries(photosToSave)) {
+          const padded = k.replace(/\D/g, '').padStart(2, '0');
+          if (neededAngles.has(padded)) {
+            trimmed[k] = v;
+          } else {
+            trimmed[k] = { filename: `IMAGE_${padded}`, angle: padded, captured: true };
+          }
+        }
+        photosToSave = trimmed;
+      }
+    } catch (sizeErr) {
+      console.warn('Photo size check warning:', sizeErr.message);
+    }
+    inspectionResults.photos = photosToSave;
 
     await Inspection.findOneAndUpdate(
       { inspection_id: inspectionId },

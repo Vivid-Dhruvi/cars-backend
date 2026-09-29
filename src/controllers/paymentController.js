@@ -1,7 +1,13 @@
+const crypto = require('crypto');
 const { connectToDatabase } = require('../config/db');
 const Inspection = require('../models/Inspection');
 const { sendInspectionReportEmail } = require('../services/emailService');
 const { createICreditPaymentSession, verifyICreditSale } = require('../services/paymentService');
+
+function generateSecureSha256(inspectionId, findings) {
+  const payload = JSON.stringify(findings || []) + (inspectionId || '');
+  return 'sha256-' + crypto.createHash('sha256').update(payload).digest('hex');
+}
 
 /**
  * Initiates an iCredit hosted payment session
@@ -80,7 +86,7 @@ async function handlePaymentIPN(req, res) {
 
       if (updateResult) {
         if (!updateResult.sha256_hash) {
-          updateResult.sha256_hash = 'sha256-' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+          updateResult.sha256_hash = generateSecureSha256(inspectionId, updateResult.findings);
           await updateResult.save();
         }
         if (updateResult.user_info?.email) {
@@ -129,7 +135,7 @@ async function checkoutPayment(req, res) {
       payment_method: 'iCredit Hosted Gateway',
       private_sale_token: privateSaleToken || record.user_info?.private_sale_token || null
     };
-    const shaHash = record.sha256_hash || ('sha256-' + Math.random().toString(36).substring(2) + Date.now().toString(36));
+    const shaHash = record.sha256_hash || generateSecureSha256(inspectionId, record.findings);
 
     // Atomically claim the email dispatch right if not sent yet
     const updateResult = await Inspection.findOneAndUpdate(

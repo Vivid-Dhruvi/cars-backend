@@ -79,13 +79,13 @@ FIRST, VALIDATE THE IMAGES:
 
     const configuredModel = process.env.GEMINI_MODEL;
     const defaultModels = [
-      "gemini-3.5-flash",
       "gemini-3.5-flash-lite",
-      "gemini-3.1-flash-lite",
-      "gemini-3-flash-preview",
+      "gemini-flash-lite-latest",
+      "gemini-3.5-flash",
+      "gemini-flash-latest",
+      "gemini-3.6-flash",
       "gemini-3.7-flash",
-      "gemini-3.8-flash",
-      "gemini-flash-lite-latest"
+      "gemini-3.8-flash"
     ];
     const modelsToTry = [
       ...(configuredModel ? [configuredModel] : []),
@@ -94,18 +94,39 @@ FIRST, VALIDATE THE IMAGES:
 
     let lastError = null;
     for (const modelName of modelsToTry) {
-      try {
-        console.log(`Executing Gemini Vision analysis with model: ${modelName}...`);
-        const activeModel = genAI.getGenerativeModel({ model: modelName });
-        const result = await activeModel.generateContent(contents);
-        let text = result.response.text();
-        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        inspectionResults = JSON.parse(text);
-        break;
-      } catch (mErr) {
-        lastError = mErr;
-        console.warn(`Model ${modelName} failed or rate limited:`, mErr.message);
+      // Allow up to 2 attempts per model for transient 503 / 429
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          console.log(`Executing Gemini Vision analysis with model: ${modelName} (attempt ${attempt})...`);
+          const activeModel = genAI.getGenerativeModel({
+            model: modelName,
+            generationConfig: {
+              responseMimeType: "application/json",
+            },
+          });
+          const result = await activeModel.generateContent(contents);
+          let text = result.response.text().trim();
+          
+          // Match the outer JSON object cleanly even if preamble or markdown wraps it
+          const jsonMatch = text.match(/\{[\s\S]*\}/);
+          if (!jsonMatch) {
+            throw new Error('Gemini response did not contain a valid JSON object');
+          }
+          inspectionResults = JSON.parse(jsonMatch[0]);
+          break;
+        } catch (mErr) {
+          lastError = mErr;
+          console.warn(`Model ${modelName} (attempt ${attempt}) warning:`, mErr.message);
+          const isTransient = mErr.message.includes('503') || mErr.message.includes('429') || mErr.message.includes('high demand') || mErr.message.includes('fetch failed');
+          if (attempt === 1 && isTransient) {
+            // Transient rate limit or warm-up spike; wait 1.2s and retry seamlessly
+            await new Promise(r => setTimeout(r, 1200));
+            continue;
+          }
+          break; // Move to next model if permanent error or already retried
+        }
       }
+      if (inspectionResults) break;
     }
 
     if (!inspectionResults && lastError) {
