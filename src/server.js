@@ -59,13 +59,45 @@ connectToDatabase().catch(err => {
 });
 
 // Local dev server listener
+// Previous code:
+// if (!process.env.VERCEL) {
+//   const server = app.listen(PORT, () => {
+//     console.log(`🚀 CarsInsure Modular Backend running on http://localhost:${PORT}`);
+//   });
+//   server.timeout = 180000;
+//   server.keepAliveTimeout = 180000;
+//   server.headersTimeout = 185000;
+// }
+
 if (!process.env.VERCEL) {
   const server = app.listen(PORT, () => {
     console.log(`🚀 CarsInsure Modular Backend running on http://localhost:${PORT}`);
   });
+  
   server.timeout = 180000;
   server.keepAliveTimeout = 180000;
   server.headersTimeout = 185000;
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`\n❌ Error: Port ${PORT} is already in use by another running process.`);
+      console.error(`👉 Solution: Stop any existing backend terminal or run: Get-Process -Id (Get-NetTCPConnection -LocalPort ${PORT}).OwningProcess | Stop-Process -Force\n`);
+      process.exit(1);
+    } else {
+      console.error('❌ Server startup error:', err);
+      process.exit(1);
+    }
+  });
+
+  const handleShutdown = () => {
+    server.close(() => {
+      console.log('Backend server stopped cleanly.');
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGINT', handleShutdown);
+  process.on('SIGTERM', handleShutdown);
 }
 
 module.exports = app;
