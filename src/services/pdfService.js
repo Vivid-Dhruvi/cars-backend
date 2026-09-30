@@ -27,11 +27,9 @@ function createPdfDocument(record, streamOrBufferCallback) {
 
   const vehicleInfo = record.vehicle_info || {};
   const photos = record.photos || {};
-  const userInfo = record.user_info || {
-    name: 'Authorized Client',
-    email: 'client@carsinsure.com',
-    paid_at: new Date().toISOString()
-  };
+  const userInfo = record.user_info || record.userInfo || {};
+  const rawClientName = userInfo.name || `${userInfo.firstName || ''} ${userInfo.surname || ''}`.trim() || record.customer_name || record.client_name || '';
+  const rawClientEmail = userInfo.email || record.customer_email || record.client_email || '';
   const sha256Hash = record.sha256_hash || ('sha256-' + crypto.createHash('sha256').update(JSON.stringify(findings) + inspectionId).digest('hex'));
   const overallAssessment = record.overall_assessment || 'Automated multi-angle computer vision inspection completed. Visual damage areas cataloged.';
   const undamagedParts = record.undamaged_visible_parts || [];
@@ -191,8 +189,8 @@ function createPdfDocument(record, streamOrBufferCallback) {
   });
   const uploadedPhotoCount = photoEntries.length || 1;
 
-  const clientName = userInfo.name || 'Authorized Client';
-  const clientEmail = userInfo.email || 'client@carsinsure.com';
+  const clientName = rawClientName || 'N/A';
+  const clientEmail = rawClientEmail || 'N/A';
 
   const valY1 = curY + 27;
   const valY2 = curY + 44;
@@ -212,10 +210,10 @@ function createPdfDocument(record, streamOrBufferCallback) {
   doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Timestamp:', c2X, valY2);
   doc.fillColor(COLOR_TEXT).fontSize(7.5).font('Helvetica').text(scanDate, c2X + 70, valY2);
 
-  // Col 3: Payment State & Protocol
+  // Col 3: Verification Status & Protocol (No Payment / No $3)
   const c3X = MARGIN + 385;
   doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Status:', c3X, valY1);
-  doc.fillColor(COLOR_SUCCESS).fontSize(7.5).font('Helvetica-Bold').text('PAID & UNLOCKED ($3.00)', c3X + 44, valY1);
+  doc.fillColor(COLOR_SUCCESS).fontSize(7.5).font('Helvetica-Bold').text('VERIFIED & CERTIFIED', c3X + 44, valY1);
 
   doc.fillColor(COLOR_TEXT_MUTED).fontSize(7).font('Helvetica-Bold').text('Protocol:', c3X, valY2);
   doc.fillColor(COLOR_ACCENT).fontSize(7.5).font('Helvetica-Bold').text(uploadedPhotoCount >= 14 ? '14-Angle Full AI Scan' : `${uploadedPhotoCount}-Angle Targeted Scan`, c3X + 44, valY2);
