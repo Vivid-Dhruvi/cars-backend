@@ -30,17 +30,17 @@ CRITICAL MATCHING RULES FOR SUPPORTING_IMAGES & VEHICLE_PART:
 - IMAGE_01 is DIRECT FRONT FACE -> Vehicle part MUST be "front_bumper", "grille", or "headlight".
 - IMAGE_02 is WINDSHIELD & HOOD -> Vehicle part MUST be "windshield", "hood", or "cowl". NEVER label IMAGE_02 as a wheel or rim!
 - IMAGE_03 is FRONT-LEFT CORNER -> Vehicle part MUST be "front_left_corner", "front_left_fender", or "front_bumper".
-- IMAGE_04 is LEFT PROFILE SIDE -> Vehicle part MUST be "driver_door" or "rocker_panel".
-- IMAGE_05 is REAR-LEFT CORNER -> Vehicle part MUST be "rear_left_quarter_panel" or "rear_left_corner".
-- IMAGE_06 is DIRECT REAR FACE -> Vehicle part MUST be "rear_bumper", "trunk", or "tailgate".
-- IMAGE_07 is REAR WINDSHIELD -> Vehicle part MUST be "rear_windshield".
-- IMAGE_08 is REAR-RIGHT CORNER -> Vehicle part MUST be "rear_right_quarter_panel" or "rear_right_corner".
-- IMAGE_09 is RIGHT PROFILE SIDE -> Vehicle part MUST be "passenger_door".
-- IMAGE_10 is FRONT-RIGHT CORNER -> Vehicle part MUST be "front_right_fender" or "front_right_corner".
-- IMAGE_11 is FRONT-LEFT WHEEL -> Vehicle part MUST be "front_left_wheel".
-- IMAGE_12 is REAR-LEFT WHEEL -> Vehicle part MUST be "rear_left_wheel".
-- IMAGE_13 is REAR-RIGHT WHEEL -> Vehicle part MUST be "rear_right_wheel".
-- IMAGE_14 is FRONT-RIGHT WHEEL -> Vehicle part MUST be "front_right_wheel".
+- IMAGE_04 is FRONT-LEFT WHEEL -> Vehicle part MUST be "front_left_wheel".
+- IMAGE_05 is LEFT PROFILE SIDE -> Vehicle part MUST be "driver_door" or "rocker_panel".
+- IMAGE_06 is REAR-LEFT WHEEL -> Vehicle part MUST be "rear_left_wheel".
+- IMAGE_07 is REAR-LEFT CORNER -> Vehicle part MUST be "rear_left_quarter_panel" or "rear_left_corner".
+- IMAGE_08 is DIRECT REAR FACE -> Vehicle part MUST be "rear_bumper", "trunk", or "tailgate".
+- IMAGE_09 is REAR WINDSHIELD -> Vehicle part MUST be "rear_windshield".
+- IMAGE_10 is REAR-RIGHT CORNER -> Vehicle part MUST be "rear_right_quarter_panel" or "rear_right_corner".
+- IMAGE_11 is REAR-RIGHT WHEEL -> Vehicle part MUST be "rear_right_wheel".
+- IMAGE_12 is RIGHT PROFILE SIDE -> Vehicle part MUST be "passenger_door".
+- IMAGE_13 is FRONT-RIGHT WHEEL -> Vehicle part MUST be "front_right_wheel".
+- IMAGE_14 is FRONT-RIGHT CORNER -> Vehicle part MUST be "front_right_fender" or "front_right_corner".
 
 Please ensure your findings strictly adhere to these matching rules. If you see damage in IMAGE_01, do not call it a "rear_bumper" or "door".
 

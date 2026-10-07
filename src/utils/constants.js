@@ -36,17 +36,17 @@ PHOTO IDENTIFICATION:
 IMAGE_01 = Front View (Full bumper, grille, and headlights straight-on)
 IMAGE_02 = Front Windshield & Hood (Wide view facing the glass from the front cowl)
 IMAGE_03 = Front-Left Corner (45-degree diagonal view of bumper corner and front wheel arch)
-IMAGE_04 = Left Side / Driver Profile (Flat shot of front/rear doors and rocker panel)
-IMAGE_05 = Rear-Left Corner (45-degree diagonal view of rear bumper and quarter panel)
-IMAGE_06 = Rear View (Full trunk, tailgate, and rear bumper straight-on)
-IMAGE_07 = Rear Windshield (Dedicated view facing the rear window)
-IMAGE_08 = Rear-Right Corner (45-degree diagonal view of rear bumper and quarter panel)
-IMAGE_09 = Right Side / Passenger Profile (Flat shot of front/rear doors and rocker panel)
-IMAGE_10 = Front-Right Corner (45-degree diagonal view of bumper corner and front wheel arch)
-IMAGE_11 = Front-Left Wheel (Straight-on close shot of rim/hubcap)
-IMAGE_12 = Rear-Left Wheel (Straight-on close shot of rim/hubcap)
-IMAGE_13 = Rear-Right Wheel (Straight-on close shot of rim/hubcap)
-IMAGE_14 = Front-Right Wheel (Straight-on close shot of rim/hubcap)
+IMAGE_04 = Front-Left Wheel (Straight-on close shot of rim/hubcap)
+IMAGE_05 = Left Side / Driver Profile (Flat shot of front/rear doors and rocker panel)
+IMAGE_06 = Rear-Left Wheel (Straight-on close shot of rim/hubcap)
+IMAGE_07 = Rear-Left Corner (45-degree diagonal view of rear bumper and quarter panel)
+IMAGE_08 = Rear View (Full trunk, tailgate, and rear bumper straight-on)
+IMAGE_09 = Rear Windshield (Dedicated view facing the rear window)
+IMAGE_10 = Rear-Right Corner (45-degree diagonal view of rear bumper and quarter panel)
+IMAGE_11 = Rear-Right Wheel (Straight-on close shot of rim/hubcap)
+IMAGE_12 = Right Side / Passenger Profile (Flat shot of front/rear doors and rocker panel)
+IMAGE_13 = Front-Right Wheel (Straight-on close shot of rim/hubcap)
+IMAGE_14 = Front-Right Corner (45-degree diagonal view of bumper corner and front wheel arch)
 
 ALLOWED SEVERITY VALUES:
 "Minor"
@@ -123,34 +123,34 @@ const ANGLE_DESCRIPTIONS = {
   '01': 'IMAGE_01: Direct Front Face (Front bumper, grille & headlights)',
   '02': 'IMAGE_02: Windshield & Hood (Front cowl & glass facing front)',
   '03': 'IMAGE_03: Front-Left Corner (Driver 45° diagonal front fender & wheel)',
-  '04': 'IMAGE_04: Left Profile Side (Driver doors & rocker panel)',
-  '05': 'IMAGE_05: Rear-Left Corner (Driver 45° diagonal rear quarter panel)',
-  '06': 'IMAGE_06: Direct Rear Face (Full trunk & rear bumper)',
-  '07': 'IMAGE_07: Rear Windshield (Rear glass window)',
-  '08': 'IMAGE_08: Rear-Right Corner (Passenger 45° diagonal rear quarter)',
-  '09': 'IMAGE_09: Right Profile Side (Passenger doors & rocker panel)',
-  '10': 'IMAGE_10: Front-Right Corner (Passenger 45° diagonal front fender)',
-  '11': 'IMAGE_11: Front-Left Wheel (Rim & hubcap close-up)',
-  '12': 'IMAGE_12: Rear-Left Wheel (Rim & hubcap close-up)',
-  '13': 'IMAGE_13: Rear-Right Wheel (Rim & hubcap close-up)',
-  '14': 'IMAGE_14: Front-Right Wheel (Rim & hubcap close-up)'
+  '04': 'IMAGE_04: Front-Left Wheel (Rim & hubcap close-up)',
+  '05': 'IMAGE_05: Left Profile Side (Driver doors & rocker panel)',
+  '06': 'IMAGE_06: Rear-Left Wheel (Rim & hubcap close-up)',
+  '07': 'IMAGE_07: Rear-Left Corner (Driver 45° diagonal rear quarter panel)',
+  '08': 'IMAGE_08: Direct Rear Face (Full trunk & rear bumper)',
+  '09': 'IMAGE_09: Rear Windshield (Rear glass window)',
+  '10': 'IMAGE_10: Rear-Right Corner (Passenger 45° diagonal rear quarter)',
+  '11': 'IMAGE_11: Rear-Right Wheel (Rim & hubcap close-up)',
+  '12': 'IMAGE_12: Right Profile Side (Passenger doors & rocker panel)',
+  '13': 'IMAGE_13: Front-Right Wheel (Rim & hubcap close-up)',
+  '14': 'IMAGE_14: Front-Right Corner (Passenger 45° diagonal front fender)'
 };
 
 const ANGLE_TO_PART_MAP = {
   'IMAGE_01': 'front_bumper',
   'IMAGE_02': 'windshield',
   'IMAGE_03': 'front_left_corner',
-  'IMAGE_04': 'driver_door',
-  'IMAGE_05': 'rear_left_corner',
-  'IMAGE_06': 'rear_bumper',
-  'IMAGE_07': 'rear_windshield',
-  'IMAGE_08': 'rear_right_corner',
-  'IMAGE_09': 'passenger_door',
-  'IMAGE_10': 'front_right_corner',
-  'IMAGE_11': 'front_left_wheel',
-  'IMAGE_12': 'rear_left_wheel',
-  'IMAGE_13': 'rear_right_wheel',
-  'IMAGE_14': 'front_right_wheel'
+  'IMAGE_04': 'front_left_wheel',
+  'IMAGE_05': 'driver_door',
+  'IMAGE_06': 'rear_left_wheel',
+  'IMAGE_07': 'rear_left_corner',
+  'IMAGE_08': 'rear_bumper',
+  'IMAGE_09': 'rear_windshield',
+  'IMAGE_10': 'rear_right_corner',
+  'IMAGE_11': 'rear_right_wheel',
+  'IMAGE_12': 'passenger_door',
+  'IMAGE_13': 'front_right_wheel',
+  'IMAGE_14': 'front_right_corner'
 };
 
 module.exports = {
